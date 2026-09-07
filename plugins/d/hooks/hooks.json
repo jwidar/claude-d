@@ -1,0 +1,44 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/warn-noncanonical-cwd.ps1"],
+            "timeout": 15,
+            "statusMessage": "Checking the launch path casing"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/format-cs-on-edit.ps1"],
+            "timeout": 30,
+            "statusMessage": "Applying .editorconfig formatting"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/format-summary-on-stop.ps1"],
+            "timeout": 5,
+            "statusMessage": "Summarizing formatting time"
+          }
+        ]
+      }
+    ]
+  }
+}

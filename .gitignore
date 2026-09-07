@@ -1,0 +1,11 @@
+# Personal Claude Code plugin marketplace. This is a normal git repo (it is NOT
+# the live ~/.claude dir), so track everything except local sidecars and OS junk.
+
+# Machine-local overrides consumed by setup.ps1 — never shared
+*.local.md
+*.local.json
+
+# OS / editor junk
+Thumbs.db
+.DS_Store
+*.lnk

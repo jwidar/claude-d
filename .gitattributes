@@ -1,0 +1,8 @@
+# Normalize every text file to LF inside the repository, and check it out with
+# whatever the platform expects. Without this, the working tree's endings depend
+# on each machine's core.autocrlf setting.
+* text=auto
+
+# PowerShell is Windows tooling — pin it to CRLF on every platform rather than
+# leaving it to the checkout default.
+*.ps1 text eol=crlf
