@@ -68,6 +68,23 @@ These are conventions this plugin enforces and are not expressible as standard `
 
 13. **Keep instances local when their scope is a single method.** Flag a value promoted to a field or other shared member when only one method uses it. A shared member signals "this may be mutated elsewhere" and forces the reader to scan the whole class — and every caller too, if the member is public — to rule out side effects, instead of reading just the one method. A local declaration is self-evidently fresh and untouched.
 
+14. **No top-level statements.** Every entry point is an explicit `class Program` with a `static void Main(string[] args)`. Flag any `Program.cs` written as top-level statements (no `class`/`Main` wrapper).
+
+15. **Setup/registration/wiring code is broken into named methods, not one long body.** `Main` (and any other entry-point or configuration method) must read as an outline: a short sequence of calls like `AddDataAccess(builder)`, `AddEmailDelivery(builder)`, `ConfigurePipeline(app)`, each named for the section it configures. Flag a `Main` (or similar) that inlines many lines of registration, options binding, or middleware wiring directly, especially when comments are used to label sections — that labeling is the sign the block wants to be its own method. The method name replaces the comment.
+    ```csharp
+    // Bad: comment-labeled sections inline in Main
+    // Configure email delivery
+    builder.Services.Configure<EmailOptions>(...);
+    builder.Services.AddSingleton<IEmailSender, ...>();
+
+    // Good: the section becomes a named method, called from Main
+    private static void AddEmailDelivery(WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<EmailOptions>(...);
+        builder.Services.AddSingleton<IEmailSender, ...>();
+    }
+    ```
+
 ## How to report
 
 - **Open with the model line.** The first line of every report names the model you are
