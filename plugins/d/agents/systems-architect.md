@@ -55,6 +55,15 @@ When making architectural decisions, explicitly evaluate:
 4. **Scalability**: How does this design handle growth in data, users, or complexity?
 5. **Testability**: Can this be easily unit tested and integration tested?
 6. **User-first design**: Does this serve both the API consumer and end-user well?
+7. **Concurrency safety**: When multiple actors can race over the same state,
+   prefer a single-consumer job queue over a polling reconcile loop that
+   mutates state each tick. This is a code-cleanliness argument as much as a
+   safety one: a reconcile loop invites locks, idempotency checks, and
+   defensive conditionals to patch the races it creates, and those accumulate
+   in every method that touches the shared state. A single consumer
+   processing one job at a time removes the race by construction, so none of
+   that machinery is needed in the first place — less code, not just safer
+   code.
 
 **Output Format:**
 
