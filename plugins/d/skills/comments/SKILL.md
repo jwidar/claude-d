@@ -1,6 +1,6 @@
 ---
 name: comments
-description: Use when writing, editing, or reviewing comments in source code — including doc comments, TODOs, and commented-out code. Also use when adding new code that seems to want an explanatory comment, and when reviewing a diff that adds or changes comments.
+description: Use before writing ANY code, not just when a comment is already in mind — check this before every code-writing or code-editing turn, including doc comments, TODOs, and commented-out code. Also use when reviewing a diff that adds or changes comments. Default is no comments; this skill is the last-resort check for the rare case one is warranted.
 ---
 
 # Comments in Code
