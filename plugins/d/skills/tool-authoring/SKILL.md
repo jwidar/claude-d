@@ -42,20 +42,59 @@ The reverse is not duplication: an agent runs in a fresh context and cannot read
 the skill file, so the agent must be fully self-contained. That is the point of
 the split — the rules live in the agent, and only the agent.
 
-## 3. A rule is written once
+## 3. A rule has one home across files
 
-Any given instruction has exactly one home. Everywhere else refers to it by name.
+Any given instruction lives in exactly one **file** among the files that load
+into the same session. Other files refer to it by name. Two repo `CLAUDE.md`
+files never load together, so each repo may carry its own copy of a repo-level
+rule.
 
-- `User_CLAUDE.md` is loaded into every session. It holds the pointer, never the
-  rules. Two or three sentences and the skill name; if a section there grows past
-  a short paragraph, it belongs in a skill.
+- `User_CLAUDE.md` is loaded into every session. A rule that must be in force on
+  every turn, whether or not a skill fires — "write no comment", "never start
+  services" — lives there in full. Procedures, examples, and anything longer
+  than a paragraph belong in a skill; `User_CLAUDE.md` then holds the skill name
+  and the one-line reason to invoke it.
 - `CLAUDE.md` (repo) holds repo facts — layout, maintenance steps, conventions
   specific to this repository. Not portable guidance.
 - Skills and agents hold the rules themselves, under rule 2.
 
-When you find the same rule in two files, delete one. Do not "keep them in sync".
+When you find the same rule in two files that load together, delete one. Do not
+"keep them in sync". Inside one file, rule 4 applies — repetition there is
+intended.
 
-## 4. Frontmatter is trigger language only
+## 4. Instruction files are filed by moment, not by topic
+
+Applies to `User_CLAUDE.md` and to every repo `CLAUDE.md`.
+
+An instruction in context is not an instruction applied. The model retrieves
+what the current action cues, and a header is that cue. A rule under a topic
+header ("Maintenance", "Code Quality Standards") is read but not applied at the
+moment it matters ("committing", "writing code"). Depth adds a second filter: a
+rule three heading levels down, under a scene-setting title, is weighted less
+than a flat one. This was observed, not guessed: a version-bump rule under
+`## Maintenance` was skipped in three consecutive commits while it sat in
+context the whole time.
+
+- **Every header names the moment its section applies.** "Before committing",
+  "When I switch topic", "Before writing or editing any code". Not "Git", not
+  "Conventions", not "Code Quality Standards".
+- **Phrase the moment as the action the model is about to take**, not as the
+  rule's subject. "Before pushing", not "Remote repositories". "When you create
+  or edit any file", not "Line endings".
+- **One heading level: `#`.** No `##` or deeper anywhere in these files. A
+  section that holds facts, not rules — a layout listing, what the repo is — may
+  keep a topic header; a section that holds a rule may not.
+- **A rule that applies at several moments is written under each of them.** Do
+  not deduplicate across sections. Do not cross-reference ("see above") in place
+  of the rule; the reader at that moment has not read "above".
+- **The file opens with a "How this file is organized" section** stating these
+  conventions, so the next editor keeps them.
+- **When a rule was skipped although it was in context, move it or repeat it**
+  under the moment where it should have fired. Do not add emphasis, bold, or a
+  caveat — those do not change which header the model is reading under. If the
+  rule must never be missed, it is a hook, not prose.
+
+## 5. Frontmatter is trigger language only
 
 The `description:` on a skill or an agent states **when it fires** — the
 situations, the phrasings the user might use, the kinds of files or tasks
@@ -83,7 +122,7 @@ trigger language, showing the situation that should cause the agent to be
 launched. Keep the commentary inside them about *why this is the moment to
 invoke*, not about what the agent knows.
 
-## 5. Before finishing
+## 6. Before finishing
 
 - Reread the new component against rule 1: name the one capability it owns, in
   one sentence. If that takes two sentences, split it or drop it.
