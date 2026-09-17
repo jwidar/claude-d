@@ -64,7 +64,11 @@ intended.
 
 ## 4. Instruction files are filed by moment, not by topic
 
-Applies to `User_CLAUDE.md` and to every repo `CLAUDE.md`.
+Applies to every file Claude loads as its own instructions: `User_CLAUDE.md`,
+every repo `CLAUDE.md`, and skill bodies. It does **not** apply to user-facing
+documentation — readmes, docs, wiki pages. Those are written for a human reader
+who navigates by topic; this rule is about how the model consumes instructions
+for itself, which is a different problem.
 
 An instruction in context is not an instruction applied. The model retrieves
 what the current action cues, and a header is that cue. A rule under a topic
