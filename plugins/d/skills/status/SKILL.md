@@ -8,11 +8,11 @@ allowed-tools: Bash, Read, Grep, Glob
 
 The user often forgets where work was left between sessions — even when resuming the same session later. This skill produces a short, accurate orientation so work resumes from a true baseline instead of a stale assumption. **Do not silently continue work** if any check reveals drift; surface it and let the user decide.
 
-## 1. Gather state
+# 1. Gather state
 
 Run these checks in parallel where possible. Be quick — this is orientation, not a deep audit.
 
-### 1a. Git branch status vs remote
+# 1a. Git branch status vs remote
 
 ```
 git status -sb
@@ -29,7 +29,7 @@ Capture:
 
 If `git fetch` fails (offline, no remote), note it and continue with local-only info.
 
-### 1b. Active plans and TODOs
+# 1b. Active plans and TODOs
 
 Look for in-flight planning artifacts in the repo:
 - `.claude/plans/*.md`, `PLAN.md`, `TODO.md`, or any file the user has previously pointed at as the active plan.
@@ -40,7 +40,7 @@ For each, read enough to know:
 - What it claims is **in progress** or **next**.
 - Any explicit acceptance criteria.
 
-### 1c. Associated work item (only if a DevOps integration is connected)
+# 1c. Associated work item (only if a DevOps integration is connected)
 
 Skip this section entirely if no DevOps integration is available, or if the repo has no DevOps association. Do **not** prompt the user to set it up here.
 
@@ -51,7 +51,7 @@ If available:
 
 If no work item id can be inferred, do not guess. Just report "no work item linked" and move on.
 
-## 2. Reconcile
+# 2. Reconcile
 
 Compare what the plan/TODO says against what the code, branch, and work item actually show. Look specifically for:
 
@@ -64,7 +64,7 @@ Compare what the plan/TODO says against what the code, branch, and work item act
 
 Drift is the headline. If everything lines up, say so explicitly — that is also a useful report.
 
-## 3. Report
+# 3. Report
 
 Output a short, scannable summary. ASCII only (no Mermaid). Suggested shape:
 
@@ -91,7 +91,7 @@ Suggested next step: <one concrete action, framed as a question>
 
 Keep the whole report under ~25 lines unless drift requires more detail.
 
-## 4. Hand off, don't drive
+# 4. Hand off, don't drive
 
 End by asking the user how to proceed. Do **not**:
 - Silently start working on the "next" item.

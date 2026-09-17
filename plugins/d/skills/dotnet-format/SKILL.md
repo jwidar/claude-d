@@ -18,7 +18,7 @@ detail silently changed which fixes got *applied* solution-wide, converting
 style violation. Follow the rules below to make that class of mistake
 structurally impossible instead of relying on catching it after the fact.
 
-## Rule 1 — never raise `--severity` to see more detail
+# Rule 1 — when you need more diagnostic detail: never raise `--severity`
 
 In `dotnet format`, severity is not a reporting filter. It is the threshold for
 which fixes get **applied**. Raising it from the project's configured default
@@ -40,7 +40,7 @@ touching the apply threshold:
   or just reading normal build output) — the compiler's own diagnostics
   already carry file/line for anything configured above `silent`.
 
-## Rule 2 — auto-apply vs suggest-only
+# Rule 2 — before running any fix-applying command: auto-apply vs suggest-only
 
 Before running any fix-applying command, classify what it will touch:
 
@@ -63,7 +63,7 @@ in any repo as diagnostic — run with `--verify-no-changes --report` first,
 scan the report for suggest-only categories, and only then decide whether to
 apply.
 
-## Rule 3 — pin structurally risky rules in `.editorconfig`
+# Rule 3 — when creating or touching `.editorconfig`: pin structurally risky rules
 
 These analyzer rules change code *shape*, not just whitespace, so an unpinned
 one will happily "fix" hand-written code into a different valid style the
@@ -87,7 +87,7 @@ When reviewing a new or updated `.editorconfig`, check this table proactively
 in the table that has no explicit severity as a finding, the same way a missing
 test would be flagged.
 
-## Rule 4 — grep for known-bad shapes after any format pass
+# Rule 4 — after any format pass: grep for known-bad shapes
 
 Some fixes are individually correct but combine into an ugly result the
 formatter does not clean up on its own. After any multi-file `dotnet format`
@@ -109,7 +109,7 @@ run, grep the touched files for these before considering the pass done:
 Add further known-bad shapes to this list as they turn up — this section is
 meant to grow, not be exhaustive on day one.
 
-## Rule 5 — finish what `dotnet format` reports as unfixable
+# Rule 5 — when `dotnet format` reports a violation as unfixable: finish it yourself
 
 Roslyn's `NamingStyleCodeFixProvider` (backing `IDE1006`) does not support
 "Fix All in Solution/Document". `dotnet format` reports these as "Unable to

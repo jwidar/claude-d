@@ -9,14 +9,14 @@ allowed-tools: Agent, Read, Write, Glob, Skill
 This skill routes the user's message to one of the specialist agents and keeps
 the choice sticky for the rest of the session.
 
-## Available experts
+# Available experts
 
 | Key            | Agent type               | Domain                                    |
 |----------------|--------------------------|-------------------------------------------|
 | `architect`    | `d:systems-architect`    | Architecture, patterns, data flow, SOLID  |
 | `csharp-style` | `d:csharp-style-reviewer`| C# style conventions beyond the formatter |
 
-## Routing
+# When the user addresses an expert: routing
 
 1. **Check for a sticky choice.** Read `<scratchpad>/expert-choice.txt`. If it
    exists and names a valid key, use that expert — skip to step 3.
@@ -36,13 +36,13 @@ the choice sticky for the rest of the session.
 5. **Relay the answer.** Return what the agent said. Do not summarise, reframe, or
    add your own opinion on top of the agent's output.
 
-## Switching experts
+# When the user asks to switch expert
 
 If the user says "switch expert", "different expert", or names the other domain
 explicitly ("ask the style reviewer"), overwrite the sticky choice and route
 there instead.
 
-## What this skill does NOT do
+# What this skill does NOT do
 
 - It does not hold any of the experts' rules — those live in the agent files.
 - It does not answer the question itself. If no expert fits, say so in one line.

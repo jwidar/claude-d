@@ -24,7 +24,7 @@ frustrating, especially when littered all over the place.
 We have a policy to not write comments and to add one is truly called for only
 as a last resort when the code alone does not make sense.
 
-## Never write these
+# Before writing a comment: never write these
 
 - **Restating the code.**
   ```csharp
@@ -48,7 +48,7 @@ as a last resort when the code alone does not make sense.
   class needs signposting to navigate, the class is too big.
 - **Restating the signature in words.** `// Takes an id and returns the order`.
 
-## The context is the code, never the journey
+# Before writing a comment: the context is the code, never the journey
 
 A comment is read months later by someone who has only the file in front of
 them. They were not in the session, did not read the request, and do not know
@@ -72,7 +72,7 @@ Everything above belongs in the commit message, the pull request, or a document
 — places where the history is the actual subject. Write every comment as if the
 code had always looked this way.
 
-## Write a comment only when it says something the code cannot
+# Before writing a comment: write it only when it says something the code cannot
 
 A comment earns its place when it carries information that is **not derivable
 from reading the code**:
@@ -109,7 +109,7 @@ from reading the code**:
    }
    ```
 
-## How a comment must read
+# When writing a comment that earns its place: how it must read
 
 The same rule as messages to the user — see the **How to talk to me** section
 of `User_CLAUDE.md`. A comment is prose, and dense prose is exactly what
@@ -126,14 +126,14 @@ makes comments not worth reading.
   comment explains internal behaviour (why the implementation works a certain
   way), it belongs inside the method body, next to the code it explains.
 
-## Proportionality
+# When writing a comment: keep it smaller than the code it annotates
 
 A comment must never outweigh the code it annotates. A one-line guard clause,
 a simple null check, or a short return does not earn a multi-line comment — if
 it earns one at all. When the code is shorter than the comment, the comment is
 the problem.
 
-## Prefer these over a comment
+# When you feel the urge to comment: prefer these over a comment
 
 Most urges to comment are a naming or structure problem in disguise:
 
@@ -143,13 +143,13 @@ Most urges to comment are a naming or structure problem in disguise:
 - **Name the value.** A comment explaining a literal means it wants to be a
   named constant.
 
-## TODOs
+# When writing a TODO
 
 Only with an owner and a tracked item, or they become permanent litter:
 `// TODO(jonas, #4821): remove once the legacy feed is off.` A bare `// TODO`
 gets deleted.
 
-## When editing existing code
+# When editing existing code
 
 - **Delete redundant comments in the code you touch.** Do not preserve noise out
   of politeness to whoever wrote it.
@@ -158,7 +158,7 @@ gets deleted.
 - Do **not** sweep an entire file or repo for comment cleanup unless asked. Stay
   inside the change you are already making.
 
-## Reviewing
+# When reviewing a diff that adds or changes a comment
 
 Treat an added comment as a finding when it restates the code, narrates the
 edit, or is written densely enough to need a second read. Say which of the two

@@ -8,13 +8,13 @@ allowed-tools: Bash, Read, Grep, Glob, AskUserQuestion, Agent
 
 You are performing a local-centric code review. Follow these steps in order — do not skip the context-gathering steps.
 
-## 0. Pre-check: Existing PR Feedback
+# 0. Pre-check: Existing PR Feedback
 
 If the user presents a workitem or pull request, use `AskUserQuestion` to ask whether you should read the PR first to gather existing feedback. This avoids over-commenting with feedback that is already under control. Only proceed to the review after the user responds.
 
-## 1. Gather Context
+# 1. Gather Context
 
-### 1a. Determine target branch and fetch
+# 1a. Determine target branch and fetch
 
 Determine the default branch of the remote:
 ```
@@ -28,7 +28,7 @@ git fetch origin
 
 Use `origin/<default-branch>` as the comparison target throughout the review. This represents the remote state of the target branch — the same baseline a pull request would use.
 
-### 1b. Obtain the diff
+# 1b. Obtain the diff
 
 - **Default: All branch changes** — run `git diff origin/<default-branch>...HEAD` to see everything introduced on this branch since it diverged.
 - If reviewing specific staged changes: run `git diff --cached`
@@ -39,14 +39,14 @@ Collect the list of changed files:
 git diff --name-only origin/<default-branch>...HEAD
 ```
 
-### 1c. Read changed files in full
+# 1c. Read changed files in full
 
 The diff alone is not enough. For every file that appears in the diff, read the complete current version of that file. You need to understand:
 - What the surrounding code looks like (the functions, classes, and modules the changes live inside)
 - How the changed code integrates with its immediate neighbors
 - Whether the changes are consistent with the rest of the file
 
-### 1d. Study adjacent code and existing patterns
+# 1d. Study adjacent code and existing patterns
 
 Before forming any opinions, examine the broader context:
 - **Imports and dependencies** — read files that the changed files import from or depend on (interfaces, base classes, shared utilities)
@@ -55,13 +55,13 @@ Before forming any opinions, examine the broader context:
 
 Do not skip this step. Many review findings come from understanding how changes fit into — or conflict with — the existing codebase, not from the diff in isolation.
 
-### 1e. Determine review scope
+# 1e. Determine review scope
 
 Now that you have context, confirm the scope:
 - What is the apparent intent of the changes? (new feature, bug fix, refactor, etc.)
 - If the intent is unclear, ask the user before proceeding to the review.
 
-### 1f. Check for matching pull request
+# 1f. Check for matching pull request
 
 Detect the repository name from the git remote URL:
 ```
@@ -74,7 +74,7 @@ If a DevOps integration is available, use it to check whether an active PR exist
 
 If no matching PR is found, or if no DevOps integration is available, proceed with local-only review silently. Do **not** ask for a blanket delivery choice here — each finding will be handled individually in step 3.
 
-### 1g. Architectural assessment
+# 1g. Architectural assessment
 
 Use the Agent tool to launch the `d:systems-architect` agent. Provide it with:
 - The full diff from step 1b
@@ -91,11 +91,11 @@ Prompt the architect to evaluate:
 
 Retain the architect's findings for integration into the review in Phase 2 and presentation in Phase 3 at the highest priority tier. If the architect identifies no concerns, note that the changes are architecturally sound and proceed.
 
-## 2. Review Criteria
+# 2. Review Criteria
 
 Evaluate the code against these criteria:
 
-### Architecture (from systems-architect)
+# 2a. Architecture (from systems-architect)
 
 Incorporate findings from the architectural assessment in step 1g. These are informed design evaluations, not suggestions — treat them as high-priority findings above all other categories.
 
@@ -108,20 +108,20 @@ Architectural findings include:
 
 Do not soften or hedge architectural findings. Present them as what they are: professional design evaluations backed by analysis of the codebase's existing architecture.
 
-### Correctness
+# 2b. Correctness
 - Does the code do what it's supposed to our plan?
   - Is there no plan? Ask more questions about details
 - Are there edge cases not handled?
 - Are there potential runtime errors?
 - Are relevant tests maintained?
 
-### Security
+# 2c. Security
 - Input validation at system boundaries
 - No SQL injection, XSS, command injection vulnerabilities
 - Secrets not hardcoded
 - Proper authentication/authorization checks
 
-### Design (local patterns and style)
+# 2d. Design (local patterns and style)
 
 _For systemic architectural concerns, see Architecture above. This section covers file-level and method-level design._
 - Does it follow existing patterns in the codebase?
@@ -134,7 +134,7 @@ _For systemic architectural concerns, see Architecture above. This section cover
 - **Caller-first**: does the code make sense from the call site without chasing implementations? Find callers of changed methods and interfaces — does the name and contract serve the caller's understanding? Flag abstractions that leak implementation details into the caller.
 - **Infrastructure code**: entry points, configuration, service registration, and wiring are feature roots — they must read as a clear outline. Flag methods that mix registrations with building, execution, or validation in one long body. These should be broken into named methods whose names clarify the segments.
 
-### Readability
+# 2e. Readability
 - Are names descriptive and accurate?
   - Is it clear from the call site what the code means?
   - Does each name cover its abstraction completely — or does the reader need to open the definition to understand what they are looking at?
@@ -144,7 +144,7 @@ _For systemic architectural concerns, see Architecture above. This section cover
 - **Comments** — judge every added or changed comment against the `d:comments`
   skill, and raise what it disallows as a finding.
 
-### Code style
+# 2f. Code style
 
 - Standard `.editorconfig` formatting is applied automatically by a PostToolUse hook on Write/Edit (`dotnet format`), so do not raise findings for whitespace, indentation, or `using` ordering — assume they are already correct.
 - For the personal C# conventions a formatter cannot enforce (comma-first argument wrapping, no primary constructors, fluent-chain breaking, Moq `Verify`/`Setup` wrapping, one-type-per-file, etc.), consult the `d:csharp-style-reviewer` agent on the changed `.cs` files and fold its findings in here.
@@ -152,24 +152,24 @@ _For systemic architectural concerns, see Architecture above. This section cover
 - If the diff was produced or followed by a multi-file `dotnet format` pass, apply `d:dotnet-format`'s Rule 4 grep for known-bad shapes (e.g. collapsed single-line brace bodies) before approving.
 - Raise violations as findings scoped to the changed files. If a clean fix would touch many files outside the current work, note it but don't expand scope — ask the user first.
 
-### Maintainability
+# 2g. Maintainability
 - Is it testable?
 - Are dependencies explicit?
 - Will future developers understand the intent?
 - Are breaking changes introduced without good reason?
 
-## 3. Interactive Review
+# 3. Interactive Review
 
 Present findings one at a time in an interview format. Never dump all findings at once.
 
 Findings arrive as reports from `d:systems-architect` and `d:csharp-style-reviewer`.
 Reword them plainly before presenting any of them — never paste a report through.
 
-### 3a. Opening summary
+# 3a. Opening summary
 
 Start with a single sentence describing the overall scope and nature of the changes. Do **not** list individual findings yet. Mention a few positive observations here if appropriate (keep brief, 2-3 bullet points max).
 
-### 3b. Walk through each finding
+# 3b. Walk through each finding
 
 Order findings by priority: Architecture first (from step 1g), then Critical, then Major, then Minor. When presenting architectural findings, state them with conviction — these are evaluated design positions, not tentative suggestions. Use language like "This violates...", "This should be...", "The correct approach is..." rather than "You might consider..." or "It could be better to...". For each finding, present:
 
@@ -189,7 +189,7 @@ The user can always provide free-text input via "Other" to discuss further, refi
 
 Wait for the user's response before presenting the next finding.
 
-### 3c. Action summary
+# 3c. Action summary
 
 After all findings have been walked through, produce a final summary grouped by chosen action:
 
@@ -206,7 +206,7 @@ End with an overall verdict: **APPROVE**, **REQUEST CHANGES**, or **NEEDS DISCUS
 
 **Plan mode compatibility:** The action summary is purely documentation of review decisions — it does not require editing code. If plan mode is active, write the action summary as implementation tasks in the plan file. Each "fix locally" item becomes a task with file:line and what to change. Each "comment on PR" item becomes a task to post the comment. This way the review flows naturally into plan-then-implement.
 
-## 4. Documentation restraint
+# 4. Documentation restraint
 
 A review produces findings and an action summary. It does **not** produce
 documentation byproducts:
@@ -217,7 +217,7 @@ documentation byproducts:
 
 The action summary in step 3c is the only record. Everything else is noise.
 
-## 5. Guidelines
+# Throughout the review
 
 - Be specific - reference exact file paths and line numbers
 - Be constructive - suggest fixes, don't just criticize

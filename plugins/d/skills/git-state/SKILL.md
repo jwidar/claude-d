@@ -10,7 +10,7 @@ Commit and push state are **facts about the repository**, not inferences from
 what you did this session. Before you state — or quietly rely on — whether work
 is committed or pushed, confirm it with git.
 
-## The trap
+# Before asserting commit or push state: the trap
 
 The repository changes outside your actions:
 
@@ -28,7 +28,7 @@ So these inferences are all unsound:
 
 If you did not run a command **this turn** that proves the state, you do not know it.
 
-## What to run
+# When checking the state: what to run
 
 Use `git -C <repo>` (never `cd … &&`). One command answers most questions:
 
@@ -51,7 +51,7 @@ To enumerate the unpushed commits:
 git -C <repo> log --oneline origin/<branch>..HEAD
 ```
 
-## How to report
+# When reporting the state
 
 State the claim **with the evidence**, in the present tense of what you just saw:
 

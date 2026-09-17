@@ -12,7 +12,7 @@ nothing to read.
 
 **You do the digging. They read one line.**
 
-## Gather silently
+# 1. Gather silently
 
 Run these yourself. Do not narrate them, do not report their raw output.
 
@@ -31,7 +31,7 @@ Then check, cheaply, for anything that says what was in flight:
 If a check is slow or unclear, drop it. A missing detail costs less than a
 delayed or bloated opener.
 
-## Report
+# 2. Report
 
 One line of where things stand, then a menu. Nothing else.
 
@@ -57,7 +57,7 @@ Rules for the menu:
 - Two to four options, labels of four words or fewer.
 - Always include an exit option.
 
-## When to skip
+# When the user opens with a request, or nothing is in flight
 
 If the user opens with a direct request, answer the request. Do not make them
 walk through a menu to reach the thing they already asked for.
@@ -65,7 +65,7 @@ walk through a menu to reach the thing they already asked for.
 If the repo is clean and nothing is in flight, say so in one line and offer the
 menu anyway — "Clean tree on master, nothing in flight" is a complete opener.
 
-## What breaks this
+# Never put these in the opening message
 
 Do not, in the opening message:
 

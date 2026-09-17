@@ -9,7 +9,7 @@ Captures a plugin issue found in a consumer session so the CLAUDE marketplace
 repo can pick it up later. This skill only records the handover — it never
 edits plugin files itself (this session is not that repo).
 
-## 1. Judge trivial vs non-trivial
+# 1. Judge trivial vs non-trivial
 
 - **Trivial** — a one-line fix or tweak is self-evident from the description
   alone (a typo, a wrong trigger phrase, a missing frontmatter field).
@@ -18,7 +18,7 @@ edits plugin files itself (this session is not that repo).
 
 Judge it yourself from what the user said; don't ask unless genuinely unclear.
 
-## 2. Trivial: append one line
+# 2. Trivial: append one line
 
 Append to `$env:USERPROFILE\.claude\plugin-backlog.md` (create if missing):
 
@@ -28,7 +28,7 @@ Append to `$env:USERPROFILE\.claude\plugin-backlog.md` (create if missing):
 
 Use today's date and the current repo's directory name for `<project>`.
 
-## 3. Non-trivial: write the full handover, then a one-line pointer
+# 3. Non-trivial: write the full handover, then a one-line pointer
 
 Write the full write-up to
 `$env:USERPROFILE\.claude\plugin-handovers\<slug>.md` — a short kebab-case
@@ -42,7 +42,7 @@ Then append one line to `plugin-backlog.md`:
 - [ ] YYYY-MM-DD (<project>) — <short summary> → see plugin-handovers/<slug>.md
 ```
 
-## 4. Confirm
+# 4. Confirm
 
 Tell the user in one line what was written and where. Do not open or edit any
 file under `C:\src\CLAUDE` — that repo processes the backlog on its own next

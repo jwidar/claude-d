@@ -9,7 +9,7 @@ Every rule here exists because the alternative was tried and drifted. Instructio
 that live in two places stop matching. Two components that both "handle" a topic
 mean neither is authoritative, and whichever fires first wins by accident.
 
-## 1. One owner per capability
+# 1. Before adding a component: one owner per capability
 
 A capability is owned by exactly one component. Before writing a new skill or
 agent, find the existing one that covers the same ground. If there is one,
@@ -26,7 +26,7 @@ Choosing which:
   hand off, nothing to run separately.
 - **Neither** — when it is one sentence. Put it in `User_CLAUDE.md`.
 
-## 2. A skill that has an agent is a trigger, not a second copy
+# 2. When a skill routes to an agent: the skill is a trigger, not a second copy
 
 When a capability is owned by an agent, the skill's entire job is routing:
 
@@ -42,7 +42,7 @@ The reverse is not duplication: an agent runs in a fresh context and cannot read
 the skill file, so the agent must be fully self-contained. That is the point of
 the split — the rules live in the agent, and only the agent.
 
-## 3. A rule has one home across files
+# 3. When a rule could live in two files: one home across files
 
 Any given instruction lives in exactly one **file** among the files that load
 into the same session. Other files refer to it by name. Two repo `CLAUDE.md`
@@ -62,7 +62,7 @@ When you find the same rule in two files that load together, delete one. Do not
 "keep them in sync". Inside one file, rule 4 applies — repetition there is
 intended.
 
-## 4. Instruction files are filed by moment, not by topic
+# 4. When you file a rule in an instruction file: by moment, not by topic
 
 Applies to every file Claude loads as its own instructions: `User_CLAUDE.md`,
 every repo `CLAUDE.md`, and skill bodies. It does **not** apply to user-facing
@@ -91,14 +91,15 @@ context the whole time.
 - **A rule that applies at several moments is written under each of them.** Do
   not deduplicate across sections. Do not cross-reference ("see above") in place
   of the rule; the reader at that moment has not read "above".
-- **The file opens with a "How this file is organized" section** stating these
-  conventions, so the next editor keeps them.
+- **`User_CLAUDE.md` and each repo `CLAUDE.md` open with a "How this file is
+  organized" section** stating these conventions, so the next editor keeps them.
+  Skills and agents do not — this skill is that section for them.
 - **When a rule was skipped although it was in context, move it or repeat it**
   under the moment where it should have fired. Do not add emphasis, bold, or a
   caveat — those do not change which header the model is reading under. If the
   rule must never be missed, it is a hook, not prose.
 
-## 5. Frontmatter is trigger language only
+# 5. When you write frontmatter: trigger language only
 
 The `description:` on a skill or an agent states **when it fires** — the
 situations, the phrasings the user might use, the kinds of files or tasks
@@ -126,7 +127,7 @@ trigger language, showing the situation that should cause the agent to be
 launched. Keep the commentary inside them about *why this is the moment to
 invoke*, not about what the agent knows.
 
-## 6. Before finishing
+# 6. Before finishing
 
 - Reread the new component against rule 1: name the one capability it owns, in
   one sentence. If that takes two sentences, split it or drop it.

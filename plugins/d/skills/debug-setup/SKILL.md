@@ -13,7 +13,7 @@ that makes that contract concrete in a repo that does not have it yet.
 When the user first asks for debug support in a repo, create both of the
 following:
 
-### `.claude/debugging.local.md`
+# When creating `.claude/debugging.local.md`
 
 Record any repo-specific deviations from the default contract (e.g. which
 IDE the user uses, which projects are startup projects, any env vars set
@@ -39,7 +39,7 @@ Environment variables set by the IDE launch config (not by Claude):
 - Non-web projects: DOTNET_ENVIRONMENT = Development (only when needed)
 ```
 
-### `.claude/temp/kill-process-for-claude.cmd`
+# When creating `.claude/temp/kill-process-for-claude.cmd`
 
 Narrow to the project's own exe names:
 ```
@@ -50,7 +50,7 @@ exit /b 0
 
 Do not include a broad `dotnet.exe` / `node.exe` scan.
 
-## VS Code + C# — recommended layout
+# When the user runs C# projects from VS Code: recommended layout
 
 Applies whenever the user runs one or more C# projects from VS Code
 (web apps, workers, console apps, test harnesses — any runnable project).

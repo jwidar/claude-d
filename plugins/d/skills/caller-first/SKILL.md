@@ -8,19 +8,19 @@ description: Use when the user finds code unclear, hard to follow, or wants to e
 The user is looking at code that does not make sense from where they stand. Your
 job is to find out why and propose concrete changes.
 
-## 1. Identify the target
+# 1. Identify the target
 
 If the user pointed at specific code (a file, a selection, a symbol), start
 there. If they described the confusion without pointing, ask once — file or
 symbol name is enough.
 
-## 2. Read the target and its callers
+# 2. Read the target and its callers
 
 Read the target code in full. Then find every caller — grep for the method,
 class, or interface name across the codebase. Read each call site in enough
 context (the enclosing method or block) to understand how the target is used.
 
-## 3. Evaluate from the caller's view
+# 3. Evaluate from the caller's view
 
 For each caller, answer:
 
@@ -31,7 +31,7 @@ For each caller, answer:
 - If this is a feature root: does the entry point's code read as a complete
   picture, or does it force the reader to chase implementations?
 
-## 4. Diagnose
+# 4. Diagnose
 
 State what is unclear and why, in one or two sentences. Common causes:
 
@@ -41,7 +41,7 @@ State what is unclear and why, in one or two sentences. Common causes:
 - The feature root scatters logic — understanding it requires reading several
   implementations.
 
-## 5. Propose changes
+# 5. Propose changes
 
 Present each proposal as one finding using `AskUserQuestion`:
 

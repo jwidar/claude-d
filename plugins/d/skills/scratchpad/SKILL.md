@@ -10,7 +10,7 @@ to `scratchpad/notes.md` or "the file I just wrote". Don't. A shortened path is
 **not clickable** in the user's terminal — they cannot open it in VS Code, and
 they have no way to reconstruct the full path themselves.
 
-## The rule
+# When you mention a scratchpad file in user-facing text
 
 Every time a scratchpad file is mentioned in user-facing text, write the **full
 absolute path**, from the drive letter to the extension:
@@ -26,7 +26,7 @@ This holds for **every** mention, not just the first:
 Repetition is the point. The user's working memory does not carry the path
 between messages, and a path they saw three messages ago is not clickable now.
 
-## Never do this
+# Never write a scratchpad path like this
 
 - ❌ `scratchpad/analysis.md` — relative, not clickable
 - ❌ `<scratchpad>/analysis.md` or `$SCRATCHPAD/analysis.md` — placeholders
@@ -34,7 +34,7 @@ between messages, and a path they saw three messages ago is not clickable now.
 - ❌ "the file above" / "the same file" on a follow-up mention
 - ❌ `~/AppData/...` or any abbreviated home form
 
-## Also
+# When you choose where a temp file goes, or list several
 
 - Use the session scratchpad directory for temp files, not `/tmp` or the project
   tree — unless the user explicitly asks otherwise.
