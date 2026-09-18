@@ -21,7 +21,7 @@ These are conventions this plugin enforces and are not expressible as standard `
 
 2. **Constructor arguments are always wrapped**, one per line, even for a single argument.
 
-3. **Long argument lists wrap**, and wrapped argument lines **start with the comma** (leading comma), not trailing. The closing parenthesis sits on its **own line**.
+3. **Long argument lists wrap**, and wrapped argument lines **start with the comma** (leading comma), not trailing. The closing parenthesis sits on its **own line**. This applies to parameter lists and argument passing only — never to property initializers, object initializers, or collection initializers, which keep the trailing comma.
    ```csharp
    public OrderService(
        IOrderRepository repository
