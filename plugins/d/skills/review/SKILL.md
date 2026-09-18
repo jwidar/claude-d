@@ -55,11 +55,29 @@ Before forming any opinions, examine the broader context:
 
 Do not skip this step. Many review findings come from understanding how changes fit into — or conflict with — the existing codebase, not from the diff in isolation.
 
-# 1e. Determine review scope
+# 1e. Determine review scope and provenance
 
 Now that you have context, confirm the scope:
 - What is the apparent intent of the changes? (new feature, bug fix, refactor, etc.)
 - If the intent is unclear, ask the user before proceeding to the review.
+
+Then establish **who wrote the changes**, because it decides how much of this
+review is new work and how much is a repeat:
+
+- **Own work** — you wrote the changes in this session, under the write-time
+  rules (the architect was consulted before the first edit, the C# conventions
+  applied while typing). The specialist agents have already had their say. Do
+  not launch them again to re-derive the same findings.
+- **Foreign work** — the changes come from another session, another author, a
+  PR, or a branch you did not write. Nothing has been checked. Launch the
+  specialists in full.
+
+When you are unsure, treat the changes as foreign. Say which of the two you
+concluded in the opening summary (step 3a), in one clause, so the user knows
+what depth they are getting.
+
+A change is own work only for the part you wrote. On a branch that mixes both,
+run the specialists on the foreign files only.
 
 # 1f. Check for matching pull request
 
@@ -76,7 +94,12 @@ If no matching PR is found, or if no DevOps integration is available, proceed wi
 
 # 1g. Architectural assessment
 
-Use the Agent tool to launch the `d:systems-architect` agent. Provide it with:
+Skip this step for own work (step 1e) — the architect was consulted before the
+first edit, and a second pass over the same design only repeats it. Judge the
+architecture yourself against what was agreed then, and raise a finding only
+where the implementation drifted from it.
+
+For foreign work, use the Agent tool to launch the `d:systems-architect` agent. Provide it with:
 - The full diff from step 1b
 - The list of changed files
 - A summary of the patterns and architecture observed in steps 1c and 1d
@@ -147,7 +170,7 @@ _For systemic architectural concerns, see Architecture above. This section cover
 # 2f. Code style
 
 - Standard `.editorconfig` formatting is applied automatically by a PostToolUse hook on Write/Edit (`dotnet format`), so do not raise findings for whitespace, indentation, or `using` ordering — assume they are already correct.
-- For the personal C# conventions a formatter cannot enforce (comma-first argument wrapping, no primary constructors, fluent-chain breaking, Moq `Verify`/`Setup` wrapping, one-type-per-file, etc.), consult the `d:csharp-style-reviewer` agent on the changed `.cs` files and fold its findings in here.
+- The personal C# conventions a formatter cannot enforce (comma-first argument wrapping, no primary constructors, fluent-chain breaking, Moq `Verify`/`Setup` wrapping, one-type-per-file, etc.) are written into `User_CLAUDE.md` and apply while the code is being typed. For foreign work (step 1e), consult the `d:csharp-style-reviewer` agent on the changed `.cs` files and fold its findings in here. For own work, check the changed files against those conventions yourself and do not launch the agent.
 - If the diff touches `.editorconfig`, consult `d:dotnet-format` and check it against the structurally-risky rule table — an unpinned risky rule is a finding, not just a future risk.
 - If the diff was produced or followed by a multi-file `dotnet format` pass, apply `d:dotnet-format`'s Rule 4 grep for known-bad shapes (e.g. collapsed single-line brace bodies) before approving.
 - Raise violations as findings scoped to the changed files. If a clean fix would touch many files outside the current work, note it but don't expand scope — ask the user first.
