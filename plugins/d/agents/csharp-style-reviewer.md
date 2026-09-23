@@ -17,7 +17,29 @@ If you are given an `.editorconfig` to review (not just `.cs` files), or a diagn
 
 These are conventions this plugin enforces and are not expressible as standard `.editorconfig` rules:
 
-1. **No primary constructors.** Constructors are declared the classic way. Primary constructors are disallowed; flag any `class Foo(...)` / `record`-with-positional-params used as a primary constructor in hand-written service/domain types. (Records used purely as DTOs are fine — use judgement.)
+1. **No primary constructors.** Constructors are declared the classic way. Flag any `class Foo(...)` or `struct Foo(...)`.
+
+   **No positional records either — also not for DTOs.** Flag any `record Foo(...)`, `record class Foo(...)`, or `record struct Foo(...)`. A record declares `required` `init` properties, and the call site sets them with an object initializer. The call site then shows each property name, and each property can carry its own XML doc comment.
+   ```csharp
+   // Bad
+   public record OrderLine(string Sku, int Quantity);
+   var line = new OrderLine("A-100", 3);
+
+   // Good
+   public record OrderLine
+   {
+       /// <summary>Stock keeping unit of the ordered item.</summary>
+       public required string Sku { get; init; }
+
+       public required int Quantity { get; init; }
+   }
+
+   var line = new OrderLine
+   {
+       Sku = "A-100",
+       Quantity = 3,
+   };
+   ```
 
 2. **Constructor arguments are always wrapped**, one per line, even for a single argument.
 
