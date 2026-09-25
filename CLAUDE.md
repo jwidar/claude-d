@@ -50,6 +50,16 @@ the headers and ask: "am I at this moment now?"
   is only worth it once there are multiple plugins or a second marketplace
   manifest to keep in sync.
 
+# Before writing a hook under `plugins/d/hooks/`
+
+- **Read what a tool changed from the hook input, not from the disk.** Use
+  `tool_input` or `tool_response.structuredPatch`. PostToolUse hooks run in
+  parallel. Another hook (for example the formatter) can change the file while
+  your hook reads it.
+- **A hook that reminds, and does not block, returns its text as
+  `hookSpecificOutput.additionalContext`.** Only then does the text reach
+  Claude.
+
 # Before renaming or adding a skill, an agent, or the plugin itself
 
 A skill/agent **name** is duplicated across several files. Renaming or adding
