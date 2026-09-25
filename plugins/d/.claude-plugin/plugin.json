@@ -2,7 +2,7 @@
   "name": "d",
   "displayName": "Jonas Dev Setup",
   "description": "review / teach / status / git-state / start / scratchpad / comments / tool-authoring / debug-setup / expert / caller-first / iis-config / dotnet-format / plugin-feedback skills, architecture and C# style review agents, a PostToolUse hook that applies .editorconfig formatting after Write/Edit on .cs files, and a SessionStart hook warning on non-canonical launch-path casing. Short name so skills invoke as /d:review.",
-  "version": "0.28.0",
+  "version": "0.29.0",
   "author": {
     "name": "Jonas Widarsson",
     "email": "jonas@widarsson.com"

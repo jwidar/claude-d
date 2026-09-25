@@ -1,0 +1,13 @@
+{
+  "session_id": "fixture",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "C:\\src\\example\\OrderService.cs",
+    "old_string": "        // Sequential: the vendor API rejects concurrent requests.\n        return null;",
+    "new_string": "        // Sequential: the vendor API rejects concurrent requests.\n        return this.orders.Find(id);"
+  },
+  "tool_response": {
+    "filePath": "C:\\src\\example\\OrderService.cs"
+  }
+}

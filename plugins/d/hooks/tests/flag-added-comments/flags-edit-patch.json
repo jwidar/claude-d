@@ -1,0 +1,32 @@
+{
+  "session_id": "fixture",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "C:\\src\\example\\OrderService.cs",
+    "old_string": "    public Order Get(int id)",
+    "new_string": "    /// <summary>\n    /// Gets the order by id.\n    /// </summary>\n    public Order Get(int id)"
+  },
+  "tool_response": {
+    "filePath": "C:\\src\\example\\OrderService.cs",
+    "structuredPatch": [
+      {
+        "oldStart": 10,
+        "oldLines": 3,
+        "newStart": 10,
+        "newLines": 9,
+        "lines": [
+          " {",
+          "+    /// <summary>",
+          "+    /// Gets the order by id.",
+          "+    /// </summary>",
+          "     public Order Get(int id)",
+          "     {",
+          "+        // Loop over the orders",
+          "-        return null;",
+          "+        return this.orders.Find(id);"
+        ]
+      }
+    ]
+  }
+}

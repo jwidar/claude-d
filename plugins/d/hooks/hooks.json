@@ -23,6 +23,13 @@
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/format-cs-on-edit.ps1"],
             "timeout": 30,
             "statusMessage": "Applying .editorconfig formatting"
+          },
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/flag-added-comments-on-edit.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking added comments"
           }
         ]
       }

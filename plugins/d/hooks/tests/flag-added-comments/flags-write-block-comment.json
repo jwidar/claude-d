@@ -1,0 +1,14 @@
+{
+  "session_id": "fixture",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "C:\\src\\example\\Get-Report.ps1",
+    "content": "<#\n.SYNOPSIS\n  Gets the report.\n.PARAMETER Name\n  The report name.\n#>\nparam([string] $Name)\n<# One-line block #>\nGet-Content $Name\n"
+  },
+  "tool_response": {
+    "type": "create",
+    "filePath": "C:\\src\\example\\Get-Report.ps1",
+    "structuredPatch": []
+  }
+}

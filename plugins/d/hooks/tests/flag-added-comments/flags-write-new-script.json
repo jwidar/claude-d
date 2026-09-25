@@ -1,0 +1,14 @@
+{
+  "session_id": "fixture",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "C:\\src\\example\\Deploy-Site.ps1",
+    "content": "#requires -Version 5\n#region Setup\n# Copy the files to the site folder\nCopy-Item $source $target\n#endregion\n"
+  },
+  "tool_response": {
+    "type": "create",
+    "filePath": "C:\\src\\example\\Deploy-Site.ps1",
+    "structuredPatch": []
+  }
+}

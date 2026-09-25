@@ -1,0 +1,14 @@
+{
+  "session_id": "fixture",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Write",
+  "tool_input": {
+    "file_path": "C:\\src\\example\\readme.md",
+    "content": "# Heading\n// not code\n"
+  },
+  "tool_response": {
+    "type": "create",
+    "filePath": "C:\\src\\example\\readme.md",
+    "structuredPatch": []
+  }
+}

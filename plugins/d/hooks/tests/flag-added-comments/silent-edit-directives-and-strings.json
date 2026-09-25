@@ -1,0 +1,13 @@
+{
+  "session_id": "fixture",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "C:\\src\\example\\client.ts",
+    "old_string": "const a = 1;",
+    "new_string": "const url = \"http://example.test/api\";\nconst label = \"a // b\";\n// @ts-ignore\n// eslint-disable-next-line no-console\nconsole.log(url, label);"
+  },
+  "tool_response": {
+    "filePath": "C:\\src\\example\\client.ts"
+  }
+}
