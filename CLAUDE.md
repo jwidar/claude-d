@@ -89,6 +89,15 @@ or ticket. Every example is made up. This repo is shared; a real example leaks
 internal information, and the plugin's readers do not need it — the shape of
 the example is the point, not its facts.
 
+# When a change implements or drops a backlog entry
+
+This applies also when the work did not start from the backlog. When we have
+processed an entry in `$env:USERPROFILE\.claude\feedback-backlog.md` or
+`plugin-backlog.md` (implemented it or dropped it), tick it off (`- [x]`) at
+that moment. Append the outcome:
+`→ Promoted/Built/Dropped: <what and where, commit if any>`. Do not wait for
+the user to ask.
+
 # Before committing
 
 - **Git ceremony override:** this repo overrides the global git rules —
@@ -103,3 +112,6 @@ the example is the point, not its facts.
 - **Rename verification.** After a rename, grep the repo for the old name — only
   intended generic prose should remain — and `git status` must show a skill
   rename as `R`, not delete+add.
+- **Backlog check.** If the commit implements or drops an entry in
+  `feedback-backlog.md` or `plugin-backlog.md`, tick it off with its outcome
+  before you commit.

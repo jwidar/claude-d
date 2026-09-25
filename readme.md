@@ -13,7 +13,7 @@ things that work the same for anyone who installs the plugin.
   letter so skills invoke as `/d:review` rather than something long to type:
   - skills: `review`, `teach`, `status`, `git-state`, `start`, `scratchpad`,
     `comments`, `tool-authoring`, `debug-setup`, `expert`, `caller-first`,
-    `iis-config`, `dotnet-format`, `plugin-feedback`
+    `iis-config`, `dotnet-format`, `plugin-feedback`, `show-backlog`
   - agents: `systems-architect`, `csharp-style-reviewer`, `avalonia-ui-specialist`
   - hooks: a `PostToolUse` hook that applies `.editorconfig` formatting
     (`dotnet format`) to the `.cs` files touched by a `Write`/`Edit`, a `Stop`

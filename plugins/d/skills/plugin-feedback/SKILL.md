@@ -23,10 +23,15 @@ Judge it yourself from what the user said; don't ask unless genuinely unclear.
 Append to `$env:USERPROFILE\.claude\plugin-backlog.md` (create if missing):
 
 ```
-- [ ] YYYY-MM-DD (<project>) — <the issue in one line>
+<id> - [ ] YYYY-MM-DD (<project>) — <the issue in one line>
 ```
 
 Use today's date and the current repo's directory name for `<project>`.
+
+`<id>` is `P`, then the first 3 hex characters (lowercase) of the SHA-1 hash of
+the entry text without the ID. If the ID is already in `plugin-backlog.md`, use
+the next 3 characters of the hash. An ID never changes after it is given, also
+not when the entry is ticked off or edited.
 
 # 3. Non-trivial: write the full handover, then a one-line pointer
 
@@ -39,8 +44,10 @@ repro, why it matters, relevant file paths or excerpts.
 Then append one line to `plugin-backlog.md`:
 
 ```
-- [ ] YYYY-MM-DD (<project>) — <short summary> → see plugin-handovers/<slug>.md
+<id> - [ ] YYYY-MM-DD (<project>) — <short summary> → see plugin-handovers/<slug>.md
 ```
+
+Give `<id>` as in step 2.
 
 # 4. Confirm
 
