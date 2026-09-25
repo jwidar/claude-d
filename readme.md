@@ -11,7 +11,7 @@ things that work the same for anyone who installs the plugin.
 
 - **Plugin `d`** (`plugins/d/`) — the portable capabilities. The name is a single
   letter so skills invoke as `/d:review` rather than something long to type:
-  - skills: `review`, `teach`, `status`, `git-state`, `start`, `scratchpad`,
+  - skills: `review`, `teach`, `status`, `git-state`, `scratchpad`,
     `comments`, `tool-authoring`, `debug-setup`, `expert`, `caller-first`,
     `iis-config`, `dotnet-format`, `plugin-feedback`, `show-backlog`
   - agents: `systems-architect`, `csharp-style-reviewer`, `avalonia-ui-specialist`
