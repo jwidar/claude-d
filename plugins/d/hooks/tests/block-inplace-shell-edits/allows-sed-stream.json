@@ -1,0 +1,8 @@
+{
+  "session_id": "fixture",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "sed -n '1,20p' src/Program.cs | grep -i main"
+  }
+}
