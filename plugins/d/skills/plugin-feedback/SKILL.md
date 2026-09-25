@@ -1,12 +1,12 @@
 ---
 name: plugin-feedback
-description: Use when the user wants to hand a plugin issue back to plugin development from a consumer session — e.g. "handover to plugin dev", "feedback to the plugin", "create a prompt for the plugin", "file this against the plugin", or any mention of an issue, bug, or missing capability in the `d` plugin (a skill, agent, or hook under plugins/d) that should be picked up later in the CLAUDE marketplace repo rather than fixed here.
+description: Use when the user wants to hand a plugin issue back to plugin development from a consumer session — e.g. "handover to plugin dev", "feedback to the plugin", "create a prompt for the plugin", "file this against the plugin", or any mention of an issue, bug, or missing capability in the `d` plugin (a skill, agent, or hook under plugins/d) that should be picked up later in the claude-d marketplace repo rather than fixed here.
 ---
 
 # Plugin handover
 
-Captures a plugin issue found in a consumer session so the CLAUDE marketplace
-repo can pick it up later. This skill only records the handover — it never
+Captures a plugin issue found in a consumer session so the **claude-d**
+marketplace repo can pick it up later. This skill only records the handover — it never
 edits plugin files itself (this session is not that repo).
 
 # 1. Judge trivial vs non-trivial
@@ -52,5 +52,4 @@ Give `<id>` as in step 2.
 # 4. Confirm
 
 Tell the user in one line what was written and where. Do not open or edit any
-file under `C:\src\CLAUDE` — that repo processes the backlog on its own next
-session there.
+file in the **claude-d** repo. A later session processes the backlog.
