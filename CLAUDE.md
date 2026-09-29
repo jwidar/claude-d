@@ -10,25 +10,12 @@ script, session-start hooks, learning logs) lives in a sibling repo,
 **claude-jonas**, which installs this repo as a plugin marketplace. See that
 repo's own `CLAUDE.md` for how the two fit together.
 
-# Layout
-
-```
-.claude-plugin/marketplace.json   Marketplace manifest (name: "jwidar")
-plugins/d/                         The plugin (short name → skills invoke as /d:review)
-  .claude-plugin/plugin.json       Plugin manifest
-  agents/                          Specialist reviewers/designers (see the dir)
-  skills/                          Procedures and conventions (see the dir)
-  hooks/                           Stop: .editorconfig autoformat; SessionStart: path-casing warning
-readme.md                          What this repo is and how to install it
-```
-
 # How this file is organized
 
 Every header below names the **moment** a section applies — not its topic. Every
 header is a top-level `#`; there is no `##` or deeper, so there is no hierarchy
 to skip. A rule that applies at several moments is repeated at each one. That
-repetition is intentional — do not deduplicate it. Sections that hold facts,
-not rules ("Layout"), keep a topic header. The `d:tool-authoring` skill owns
+repetition is intentional — do not deduplicate it. The `d:tool-authoring` skill owns
 these authoring rules; follow it when you edit this file. At every step, read
 the headers and ask: "am I at this moment now?"
 
