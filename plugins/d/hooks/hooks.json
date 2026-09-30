@@ -9,6 +9,13 @@
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/warn-noncanonical-cwd.ps1"],
             "timeout": 15,
             "statusMessage": "Checking the launch path casing"
+          },
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/report-local-link-form.ps1"],
+            "timeout": 10,
+            "statusMessage": "Choosing the local file link form"
           }
         ]
       }

@@ -12,19 +12,8 @@ they have no way to reconstruct the full path themselves.
 
 # When you mention a scratchpad file in user-facing text
 
-Every time a scratchpad file is mentioned in user-facing text, write a markdown
-link. The label is the file name. The target is a `vscode://file/` URL that
-holds the **full absolute path**, from the drive letter to the extension:
-
-> `[analysis.md](vscode://file/C:/Users/ALEX~1.DOE/AppData/Local/Temp/claude/C--src-CLAUDE/<session-id>/scratchpad/analysis.md)`
-
-The user sees only `analysis.md`. A click opens the file in VS Code.
-
-- Use the scratchpad path from the environment as it is. The 8.3 short form
-  (`ALEX~1.DOE`) works.
-- Change every `\` to `/` in the URL.
-- To point at a line, add `:<line>` to the URL and to the label:
-  `[analysis.md:12](vscode://file/C:/Users/ALEX~1.DOE/AppData/Local/Temp/claude/C--src-CLAUDE/<session-id>/scratchpad/analysis.md:12)`.
+Every time a scratchpad file is mentioned in user-facing text, write it as a
+local file link. The `d:local-links` skill owns how to build the link.
 
 This holds for **every** mention, not just the first:
 
@@ -41,8 +30,7 @@ between messages, and a link they saw three messages ago is not on screen now.
 - ❌ `<scratchpad>/analysis.md` or `$SCRATCHPAD/analysis.md` — placeholders
 - ❌ "I saved it to the scratchpad" — no link at all
 - ❌ "the file above" / "the same file" on a follow-up mention
-- ❌ `~/AppData/...` or any abbreviated home form, also inside a link target
-- ❌ a link target with `\`, or with a relative path
+- ❌ `~/AppData/...` or any abbreviated home form
 
 # When you choose where a temp file goes, or list several
 
