@@ -12,30 +12,40 @@ they have no way to reconstruct the full path themselves.
 
 # When you mention a scratchpad file in user-facing text
 
-Every time a scratchpad file is mentioned in user-facing text, write the **full
-absolute path**, from the drive letter to the extension:
+Every time a scratchpad file is mentioned in user-facing text, write a markdown
+link. The label is the file name. The target is a `vscode://file/` URL that
+holds the **full absolute path**, from the drive letter to the extension:
 
-> `C:\Users\JONAS~1.WID\AppData\Local\Temp\claude\C--src-CLAUDE\<session-id>\scratchpad\analysis.md`
+> `[analysis.md](vscode://file/C:/Users/ALEX~1.DOE/AppData/Local/Temp/claude/C--src-CLAUDE/<session-id>/scratchpad/analysis.md)`
+
+The user sees only `analysis.md`. A click opens the file in VS Code.
+
+- Use the scratchpad path from the environment as it is. The 8.3 short form
+  (`ALEX~1.DOE`) works.
+- Change every `\` to `/` in the URL.
+- To point at a line, add `:<line>` to the URL and to the label:
+  `[analysis.md:12](vscode://file/C:/Users/ALEX~1.DOE/AppData/Local/Temp/claude/C--src-CLAUDE/<session-id>/scratchpad/analysis.md:12)`.
 
 This holds for **every** mention, not just the first:
 
 - The message where you create the file.
 - Any later message that refers back to it ("as noted in …").
-- Lists of several scratchpad files — each line gets its own full path.
+- Lists of several scratchpad files — each line gets its own link.
 
 Repetition is the point. The user's working memory does not carry the path
-between messages, and a path they saw three messages ago is not clickable now.
+between messages, and a link they saw three messages ago is not on screen now.
 
 # Never write a scratchpad path like this
 
 - ❌ `scratchpad/analysis.md` — relative, not clickable
 - ❌ `<scratchpad>/analysis.md` or `$SCRATCHPAD/analysis.md` — placeholders
-- ❌ "I saved it to the scratchpad" — no path at all
+- ❌ "I saved it to the scratchpad" — no link at all
 - ❌ "the file above" / "the same file" on a follow-up mention
-- ❌ `~/AppData/...` or any abbreviated home form
+- ❌ `~/AppData/...` or any abbreviated home form, also inside a link target
+- ❌ a link target with `\`, or with a relative path
 
 # When you choose where a temp file goes, or list several
 
 - Use the session scratchpad directory for temp files, not `/tmp` or the project
   tree — unless the user explicitly asks otherwise.
-- One path per line when listing files; do not bury a path mid-sentence in prose.
+- One link per line when listing files; do not bury a link mid-sentence in prose.
