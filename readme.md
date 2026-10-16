@@ -13,13 +13,15 @@ things that work the same for anyone who installs the plugin.
   letter so skills invoke as `/d:review` rather than something long to type:
   - skills: `review`, `teach`, `status`, `git-state`, `scratchpad`,
     `local-links`, `comments`, `tool-authoring`, `debug-setup`, `expert`, `caller-first`,
-    `iis-config`, `dotnet-format`, `plugin-feedback`, `show-backlog`
+    `iis-config`, `dotnet-format`, `plugin-feedback`, `show-backlog`,
+    `worktree-slot`
   - agents: `systems-architect`, `csharp-style-reviewer`, `avalonia-ui-specialist`
   - hooks: a `PostToolUse` hook that applies `.editorconfig` formatting
     (`dotnet format`) to the `.cs` files touched by a `Write`/`Edit`, a `Stop`
-    hook that summarizes the formatting time spent, and a `SessionStart` hook
+    hook that summarizes the formatting time spent, a `SessionStart` hook
     that warns when the launch path's casing does not match the filesystem's
-    own
+    own, and a `SessionStart` hook that reports when the session runs in a git
+    worktree slot
 
 ## Install on a machine
 

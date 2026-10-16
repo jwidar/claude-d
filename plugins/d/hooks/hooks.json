@@ -16,6 +16,13 @@
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/report-local-link-form.ps1"],
             "timeout": 10,
             "statusMessage": "Choosing the local file link form"
+          },
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/report-worktree-slot.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking for a worktree slot"
           }
         ]
       }
