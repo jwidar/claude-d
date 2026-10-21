@@ -1,22 +1,45 @@
 ---
 name: worktree-slot
-description: Use when the SessionStart context says "Worktree slot" or "Main clone with worktree slots", and before you create or switch a branch, commit, stash, delete a branch, or run any git worktree command in such a repo. Also use when the user says the work in a slot is done, asks to park a slot, or asks how the worktree slots work.
+description: Use when the SessionStart context says "Worktree slot", "Main clone with worktree slots", "Empty slot folder", or "Copied slot folder", and before you create or switch a branch, commit, stash, delete a branch, or run any git worktree command in such a repo. Also use when the user says "new worktree", says the work in a slot is done, asks to park a slot, or asks how the worktree slots work.
 ---
 
 # The slot layout
 
-One repo has one main clone and a fixed set of worktree slots next to it:
+One repo has one main clone and a set of worktree slots next to it. A slot
+folder is named `<repo>.<number>`:
 
 ```
-C:\src\Example\          main clone, stays on master, no edits here
-C:\src\Example.wt\1\     slot 1, one Claude session
-C:\src\Example.wt\2\     slot 2, another Claude session
+C:\src\Example\      main clone, stays on master, no edits here
+C:\src\Example.1\    slot 1, one Claude session
+C:\src\Example.2\    slot 2, another Claude session
 ```
 
 All slots share one object store, so branches, tags, and the stash list are
 shared. Each slot path stays the same for a long time, so the Claude project
 memory and IDE settings stay with the slot. An idle slot is parked on a detached
 `origin/master`. A slot is not removed after a task. It is used again.
+
+# When the user says "new worktree"
+
+The session runs in an empty folder named `<repo>.<number>`, next to the main
+clone. Run the script from this skill's base directory:
+
+```
+powershell -NoProfile -File "<skill base directory>\new-slot.ps1" -Path "<session directory>"
+```
+
+The script makes the folder a worktree of the main clone, parked on a detached
+`origin/HEAD`, and copies `.claude/*.local.*` from the main clone. Give the user
+its output. When it refuses, give the reason and stop. Do not work around it.
+
+After a success, tell the user to restart the session in the folder. A session
+that started in an empty folder did not load the project instructions or hooks.
+
+# When the SessionStart context says "Copied slot folder"
+
+The folder is a copy of another slot. Its `.git` file points to the other
+slot, so a git command here changes the HEAD and index of that slot. Tell the
+user. Do not run git in this folder. A new slot starts from an empty folder.
 
 # When the session starts in a slot
 

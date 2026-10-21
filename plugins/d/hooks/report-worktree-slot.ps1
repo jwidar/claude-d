@@ -1,14 +1,52 @@
+Import-Module (Join-Path $PSScriptRoot '..\skills\worktree-slot\WorktreeSlot.psm1') -Force
+
 function Main {
     [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
-    $layout = Get-WorktreeLayout -Directory (Get-SessionDirectory)
-    if ($null -eq $layout) {
-        return
-    }
-
-    $report = Get-WorktreeSlotReport @layout
+    $report = Get-SessionReport -Directory (Get-SessionDirectory)
     if ($report) {
         [Console]::Out.WriteLine($report)
     }
+}
+
+function Get-SessionReport {
+    param([string] $Directory)
+
+    $copiedFrom = Get-CopiedWorktreeSource -Path $Directory
+    if ($copiedFrom) {
+        return Get-CopiedFolderReport -Directory $Directory -CopiedFrom $copiedFrom
+    }
+
+    $layout = Get-WorktreeLayout -Directory $Directory
+    if ($layout) {
+        return Get-WorktreeSlotReport @layout
+    }
+
+    $candidate = Get-SlotCandidate -Path $Directory
+    if ($candidate) {
+        return Get-SlotCandidateReport -Directory $Directory -RepoPath $candidate.RepoPath -SlotNumber $candidate.SlotNumber
+    }
+    return $null
+}
+
+function Get-CopiedFolderReport {
+    param(
+        [string] $Directory
+        , [string] $CopiedFrom
+    )
+
+    return "Copied slot folder: $Directory has a .git file that belongs to the worktree at $CopiedFrom. " +
+        'Git commands here act on that other worktree. Tell the user, do not run git here, and follow the d:worktree-slot skill.'
+}
+
+function Get-SlotCandidateReport {
+    param(
+        [string] $Directory
+        , [string] $RepoPath
+        , [string] $SlotNumber
+    )
+
+    return "Empty slot folder: $Directory can become slot $SlotNumber of $RepoPath. " +
+        "If the user says 'new worktree', follow the d:worktree-slot skill."
 }
 
 function Get-SessionDirectory {
@@ -21,6 +59,8 @@ function Get-SessionDirectory {
 function Get-WorktreeLayout {
     param([string] $Directory)
 
+    # Windows PowerShell throws on redirected git stderr under Stop, for example outside a repo.
+    $ErrorActionPreference = 'Continue'
     $paths = @(git -C $Directory rev-parse --path-format=absolute --git-dir --git-common-dir --show-toplevel 2>$null)
     if ($LASTEXITCODE -ne 0 -or $paths.Count -ne 3) {
         return $null
