@@ -35,17 +35,6 @@ function Assert-SlotCanBeCreated {
     return $candidate.RepoPath
 }
 
-function Resolve-DefaultBranch {
-    param([string] $RepoPath)
-
-    $base = & git.exe -C $RepoPath symbolic-ref -q --short refs/remotes/origin/HEAD
-    if (-not $base) {
-        Invoke-Git -C $RepoPath remote set-head origin --auto | Out-Null
-        $base = Invoke-Git -C $RepoPath symbolic-ref --short refs/remotes/origin/HEAD
-    }
-    return $base
-}
-
 function Assert-NoTrackedFileInTheWay {
     param(
         [string] $SlotPath
@@ -116,15 +105,6 @@ function Remove-AdoPatLine {
     if ($kept.Count -ne $lines.Count) {
         [IO.File]::WriteAllLines($Path, [string[]] $kept, (New-Object Text.UTF8Encoding $false))
     }
-}
-
-function Invoke-Git {
-    $output = & git.exe @args 2>&1
-    $stderr = @($output | Where-Object { $_ -is [Management.Automation.ErrorRecord] })
-    if ($LASTEXITCODE -ne 0) {
-        throw "git $($args -join ' ') failed with exit code $LASTEXITCODE. $($stderr -join ' ')"
-    }
-    $output | Where-Object { $_ -isnot [Management.Automation.ErrorRecord] }
 }
 
 try {

@@ -1,6 +1,6 @@
 ---
 name: worktree-slot
-description: Use when the SessionStart context says "Worktree slot", "Main clone with worktree slots", "Empty slot folder", or "Copied slot folder", and before you create or switch a branch, commit, stash, delete a branch, or run any git worktree command in such a repo. Also use when the user says "new worktree", says the work in a slot is done, asks to park a slot, or asks how the worktree slots work.
+description: Use when the SessionStart context says "Worktree slot", "Main clone with worktree slots", "Empty slot folder", or "Copied slot folder", and before you create or switch a branch, commit, stash, delete a branch, or run any git worktree command in such a repo. Also use when the user says "new worktree", says the work in a slot is done, asks to close or park a slot, or asks how the worktree slots work.
 ---
 
 # The slot layout
@@ -92,22 +92,25 @@ and only when the user asks.
 # Before you run a git worktree command
 
 Do not run `git worktree add`, `remove`, `move`, or `prune` unless the user asks.
-Never edit files in another slot or in the main clone.
+Never edit files in another slot or in the main clone. The one exception is the
+fast-forward that `close-slot.ps1` does in the main clone.
 
-# When the work in a slot is done
+# When the user says the work in a slot is done, or asks to close or park it
 
-The work is done when the user says so. Claude cannot see that a slot is idle.
-After a push, you can offer to park the slot.
+The work is done when the user says so. The PR can be merged without Claude
+knowing. Claude cannot see that a slot is idle. After a push, you can offer to
+close the slot.
 
-1. Run `git -C <slot> status -sb`. The tree must be clean. If it is not, stop and
-   tell the user.
-2. Run the `d:git-state` check. If the branch has commits that are not pushed,
-   tell the user before you park. The branch stays, so nothing is lost.
-3. Park the slot:
+Run the script from this skill's base directory:
 
-   ```
-   git -C <slot> fetch origin
-   git -C <slot> switch --detach origin/master
-   ```
+```
+powershell -NoProfile -File "<skill base directory>\close-slot.ps1" -Path "<session directory>"
+```
+
+The script parks the slot on a detached `origin/HEAD` and fast-forwards the
+default branch in the main clone. Give the user its output. When it refuses,
+give the reason and stop. Do not work around it. When it reports unpushed
+commits or a main clone that was not updated, tell the user. Do not repair the
+main clone.
 
 Do not delete the work branch.

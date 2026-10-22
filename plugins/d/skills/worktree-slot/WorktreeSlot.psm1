@@ -60,4 +60,25 @@ function ConvertTo-ComparablePath {
     return [IO.Path]::GetFullPath($Path).Replace('/', '\').TrimEnd('\').ToLowerInvariant()
 }
 
-Export-ModuleMember -Function Get-SlotCandidate, Get-CopiedWorktreeSource
+function Resolve-DefaultBranch {
+    param([string] $RepoPath)
+
+    $base = & git.exe -C $RepoPath symbolic-ref -q --short refs/remotes/origin/HEAD
+    if (-not $base) {
+        Invoke-Git -C $RepoPath remote set-head origin --auto | Out-Null
+        $base = Invoke-Git -C $RepoPath symbolic-ref --short refs/remotes/origin/HEAD
+    }
+    return $base
+}
+
+function Invoke-Git {
+    $output = & git.exe @args 2>&1
+    $stderr = @($output | Where-Object { $_ -is [Management.Automation.ErrorRecord] })
+    if ($LASTEXITCODE -ne 0) {
+        $detail = ($stderr -join ' ') -replace '://[^/\s@]+@', '://***@'
+        throw "git $($args -join ' ') failed with exit code $LASTEXITCODE. $detail"
+    }
+    $output | Where-Object { $_ -isnot [Management.Automation.ErrorRecord] }
+}
+
+Export-ModuleMember -Function Get-SlotCandidate, Get-CopiedWorktreeSource, Resolve-DefaultBranch, Invoke-Git
