@@ -200,6 +200,12 @@ Order findings by priority: Architecture first (from step 1g), then Critical, th
 - **File**: `path/to/file.ext:line`
 - **Issue**: Description of the problem
 - **Suggestion**: How to fix it
+- **Origin**: whether this branch introduced the defect, or the default branch already has it
+
+A review fixes what the branch introduced. When the default branch already has
+the defect, recommend **Fix locally** only when the fix is trivial. Otherwise,
+recommend **Defer to bugfix** as the fourth option: the defect gets its own
+branch, so this branch stays about its own change.
 
 Then use `AskUserQuestion` to let the user decide what to do with this specific finding. Always offer **at least** these options (use these exact labels in AskUserQuestion):
 - **Fix locally** — mark for local fix
