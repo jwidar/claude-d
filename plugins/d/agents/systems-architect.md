@@ -76,7 +76,12 @@ When making architectural decisions, explicitly evaluate:
    in every method that touches the shared state. A single consumer
    processing one job at a time removes the race by construction, so none of
    that machinery is needed in the first place — less code, not just safer
-   code.
+   code. When a reconcile is still needed beside the queue, make it a job on
+   the same consumer. Do not keep a second pending set next to the queue.
+   When inline work moves behind a worker queue, it leaves the request that
+   started it. Before you choose caps or limits, trace what the delegates
+   capture, which cancellation token the job uses, which caller identity claims
+   the work needs, and which fan-out is legitimate.
 8. **Secure design**: Which Secure Design principles does this touch, and what is the answer to each?
 
 **Output Format:**
