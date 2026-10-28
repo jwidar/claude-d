@@ -30,8 +30,3 @@ a local plugin marketplace by whatever settings.json points at it (directly,
 or via a sibling repo's setup script), with `d@jwidar` then enabled in
 `enabledPlugins`. Point a marketplace registration's `path` at a local clone
 of this repo, or add it as a marketplace source by its GitHub URL.
-
-## Update
-
-Edit the plugin, then in any session run `/plugin marketplace update` (installs
-are cached, so changes go live on update).

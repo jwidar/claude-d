@@ -28,8 +28,8 @@ the headers and ask: "am I at this moment now?"
 - **Path portability:** never hard-code `C:\Users\<name>`. Use `$env:USERPROFILE`,
   `$PSScriptRoot`, or `~`. Everything must work for any user.
 - **Bump `version` in `plugins/d/.claude-plugin/plugin.json` in the same
-  change.** Installs are cached; the bump is what makes
-  `/plugin marketplace update` pull the change. This applies to every skill,
+  change.** Installs are cached; the bump is what makes the session-start
+  update pull the change. This applies to every skill,
   agent, or hook edit — not only renames. It is repeated under "Before
   committing" because it is the step most often forgotten.
 - **No scaffolding skill for the checklists in this file.** This repo has one
