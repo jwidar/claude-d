@@ -142,6 +142,14 @@ Most urges to comment are a naming or structure problem in disguise:
   that block wants to be a method with that name.
 - **Name the value.** A comment explaining a literal means it wants to be a
   named constant.
+- **Introduce a type.** A comment explaining wiring — which part feeds which,
+  who owns what, why two things are connected — means the structure is not
+  visible. Add the abstraction, method, or type that makes the connection
+  readable.
+
+For each such comment, name the rename, method, or type that removes it, and
+make that change. Keep the comment only when no change to the code can say it:
+an external constraint (rule 3 above).
 
 # When writing a TODO
 
@@ -161,5 +169,6 @@ gets deleted.
 # When reviewing a diff that adds or changes a comment
 
 Treat an added comment as a finding when it restates the code, narrates the
-edit, or is written densely enough to need a second read. Say which of the two
-fixes applies: delete it, or replace it with the reason behind the code.
+edit, explains wiring, or is written densely enough to need a second read. Say
+which fix applies: delete it, refactor so the code says it (name the rename,
+method, or type), or replace it with the reason behind the code.
