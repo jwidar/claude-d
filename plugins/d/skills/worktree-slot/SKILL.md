@@ -87,7 +87,8 @@ Pop or drop only an entry that this slot made.
 # Before you delete a branch
 
 A branch is shared by all slots. Delete only a branch that this session made,
-and only when the user asks.
+or the branch that a closed slot was on. Delete it only when the user asks or
+confirms.
 
 # Before you run a git worktree command
 
@@ -113,4 +114,22 @@ give the reason and stop. Do not work around it. When it reports unpushed
 commits or a main clone that was not updated, tell the user. Do not repair the
 main clone.
 
-Do not delete the work branch.
+After a success, offer to delete the branch that the slot was on. The script
+output names it ("It was on branch ..."). Do not offer it in these cases:
+
+- The script reported unpushed commits. Say that the branch is kept.
+- The branch is long-running: it lives beyond one task, for example `develop`
+  or `release/*`, or the repo or the user names it as long-lived. Say that the
+  branch is kept.
+
+Ask with the AskUserQuestion tool. Recommend the delete. When you are not sure
+that the branch is short-lived, recommend to keep it. On a yes, delete only the
+local branch:
+
+```
+git -C <slot> branch -D <branch>
+```
+
+`-D` is necessary because a squash merge leaves the branch unmerged for git.
+When the script reported no unpushed commits, each commit is on a remote. Do
+not delete the remote branch.
