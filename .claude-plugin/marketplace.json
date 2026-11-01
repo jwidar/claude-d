@@ -8,7 +8,7 @@
     {
       "name": "d",
       "source": "./plugins/d",
-      "description": "Personal dev setup: review / teach / status / git-state / scratchpad / local-links / comments / tool-authoring / debug-setup / expert / caller-first / iis-config / dotnet-format / plugin-feedback / show-backlog / worktree-slot skills, systems-architect / csharp-style-reviewer / avalonia-ui-specialist agents, a PostToolUse hook that applies .editorconfig formatting after Write/Edit on .cs files, a SessionStart hook warning on non-canonical launch-path casing, and a SessionStart hook reporting a git worktree slot. Named 'd' so skills invoke as /d:review."
+      "description": "Personal dev setup: review / teach / status / git-state / scratchpad / local-links / comments / tool-authoring / debug-setup / expert / caller-first / iis-config / dotnet-format / plugin-feedback / show-backlog / worktree-slot / secure-design skills, systems-architect / csharp-style-reviewer / avalonia-ui-specialist agents, a PostToolUse hook that applies .editorconfig formatting after Write/Edit on .cs files, a SessionStart hook warning on non-canonical launch-path casing, and a SessionStart hook reporting a git worktree slot. Named 'd' so skills invoke as /d:review."
     }
   ]
 }

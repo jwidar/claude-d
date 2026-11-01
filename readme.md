@@ -14,7 +14,7 @@ things that work the same for anyone who installs the plugin.
   - skills: `review`, `teach`, `status`, `git-state`, `scratchpad`,
     `local-links`, `comments`, `tool-authoring`, `debug-setup`, `expert`, `caller-first`,
     `iis-config`, `dotnet-format`, `plugin-feedback`, `show-backlog`,
-    `worktree-slot`
+    `worktree-slot`, `secure-design`
   - agents: `systems-architect`, `csharp-style-reviewer`, `avalonia-ui-specialist`
   - hooks: a `PostToolUse` hook that applies `.editorconfig` formatting
     (`dotnet format`) to the `.cs` files touched by a `Write`/`Edit`, a `Stop`

@@ -1,7 +1,7 @@
 ---
 name: review
 description: "Use when the user asks to review code, review changes, or critique code quality, and before every commit. Examples: review this code, review my changes, code review, look this over before I commit"
-allowed-tools: Bash, Read, Grep, Glob, AskUserQuestion, Agent
+allowed-tools: Bash, Read, Grep, Glob, AskUserQuestion, Agent, Skill
 ---
 
 # Dev Review
@@ -139,10 +139,8 @@ Do not soften or hedge architectural findings. Present them as what they are: pr
 - Are relevant tests maintained?
 
 # 2c. Security
-- Input validation at system boundaries
-- No SQL injection, XSS, command injection vulnerabilities
-- Secrets not hardcoded
-- Proper authentication/authorization checks
+- Invoke the `d:secure-design` skill and follow its "When you review a change"
+  section. Raise what it finds under Security.
 
 # 2d. Design (local patterns and style)
 
