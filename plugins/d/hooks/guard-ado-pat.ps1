@@ -9,10 +9,10 @@ $PatRule = 'The Azure DevOps PAT lives only in $env:ADO_PAT. A monitor-devops.lo
 function Main {
     $hookInput = Read-HookInput
     if ($hookInput.hook_event_name -eq 'SessionStart') {
-        $report = Get-SessionReport -Directory (Get-SessionDirectory)
-        if ($report) {
-            [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
-            [Console]::Out.WriteLine($report)
+        $path = Get-SettingsFileWithPat -Directory (Get-SessionDirectory)
+        if ($path) {
+            Write-SessionReport -UserMessage "$path has an ado_pat: line. A stale PAT there overrides `$env:ADO_PAT and causes a 401." `
+                -Context "$path has an ado_pat: line. $PatRule"
         }
         return
     }
@@ -37,7 +37,7 @@ function Test-WritesPatLine {
     return [string] $written -match $PatLinePattern
 }
 
-function Get-SessionReport {
+function Get-SettingsFileWithPat {
     param([string] $Directory)
 
     $path = Join-Path $Directory ".claude\$SettingsFileName"
@@ -47,7 +47,24 @@ function Get-SessionReport {
     if ((Get-Content -LiteralPath $path -Raw) -notmatch $PatLinePattern) {
         return $null
     }
-    return "$path has an ado_pat: line. $PatRule"
+    return $path
+}
+
+function Write-SessionReport {
+    param(
+        [string] $UserMessage
+        , [string] $Context
+    )
+
+    $output = @{
+        systemMessage = $UserMessage
+        hookSpecificOutput = @{
+            hookEventName = 'SessionStart'
+            additionalContext = $Context
+        }
+    }
+    [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
+    [Console]::Out.Write(($output | ConvertTo-Json -Compress -Depth 3))
 }
 
 function Get-SessionDirectory {

@@ -34,7 +34,7 @@ try {
         if ($case.Content) {
             Set-Content -LiteralPath (Join-Path $project ".claude\$SettingsFileName") -Value $case.Content
         }
-        $actual = [bool] (Get-SessionReport -Directory $project)
+        $actual = [bool] (Get-SettingsFileWithPat -Directory $project)
         if ($actual -eq $case.Expected) {
             Write-Output "PASS  $($case.Name)"
         }
