@@ -1,12 +1,28 @@
 $PushPattern = '(^|[\s;&|(])git(\s+(-C\s+(?<repo>"[^"]+"|\S+)|-c\s+\S+|--[\w-]+(=\S+)?))*\s+push\b(?<args>("[^"]*"|''[^'']*''|[^;&|\r\n"''])*)'
 $PullRequestPattern = '(^|[\s;&|(])(gh\s+pr\s+create|az\s+repos\s+pr\s+create)\b(?<args>("[^"]*"|''[^'']*''|[^;&|\r\n"''])*)'
 $QuotedTextPattern = '"[^"]*"|''[^'']*'''
+$HeredocPattern = '<<-?\s*[''"]?(?<tag>\w+)[''"]?\r?\n(?<body>[\s\S]*?)\r?\n\s*\k<tag>\b'
+$HereStringPattern = '@(?<quote>[''"])\r?\n(?<body>[\s\S]*?)\r?\n\k<quote>@'
 $CompoundPattern = '&&|[;|\r\n]'
 $ForcePattern = '(^|\s)(--force(-with-lease)?\b|-[a-zA-Z]*f\b|\+\S)'
 
 $CompoundReason = 'This command runs {0} together with other commands. Run it as a command of its own, with nothing before or after it, so that the user can read the approval prompt.'
 $ForceReason = 'A force push is the user''s own action. Do not run it. Stop, and give the user the exact command to run with !.'
 $PullRequestRecord = 'A pull request is a permanent record: on Azure DevOps it can only be abandoned, not deleted.'
+$DescriptionShape = @'
+A PR description is written for non-developers who want to grasp at a high level what was done. Write it in ASD-STE100.
+Start with the summary text, with no "Summary" header (Azure DevOps already shows a "Description" label). In one or two short paragraphs, say what situation existed, what changes for the user, and why. No code details there, and nothing the commits or the diff already say.
+Then say what was checked and who ran it, one line per case with what it showed. Head the section "Manually tested" only when a person ran the cases, otherwise "Checked by Claude". A read of the code is not a test; mark it "not tested". No generic "Test plan" checklist.
+End with /claude code on its own line. No #1234 work item reference in the title. The shape (made up):
+
+    Some customers still open report links created by the old export service. Until now, such a link showed our own "temporarily unavailable" error. Now we hand an unknown link to the old service and show what it returns, so links from both systems keep working during the rollout.
+
+    ## Checked by Claude
+    - Our own report link: works as before.
+    - A link only the old service knows: shows the old service's report page.
+
+    /claude code
+'@
 
 function Main {
     param([string] $RawInput)
@@ -21,19 +37,25 @@ function Main {
 function Get-GateDecision {
     param([string] $Command, [string] $WorkingDirectory)
 
-    $push = [regex]::Match($Command, $PushPattern)
-    $pullRequest = [regex]::Match($Command, $PullRequestPattern)
+    $scanned = Remove-TextBlocks -Command $Command
+    $push = [regex]::Match($scanned, $PushPattern)
+    $pullRequest = [regex]::Match($scanned, $PullRequestPattern)
     if (-not $push.Success -and -not $pullRequest.Success) {
         return $null
     }
 
     $action = if ($push.Success) { 'git push' } else { 'the pull request command' }
-    if (Test-CompoundCommand -Command $Command) {
+    if (Test-CompoundCommand -Command $scanned) {
         return @{ Decision = 'deny'; Reason = ($CompoundReason -f $action) }
     }
 
     if ($pullRequest.Success) {
-        return @{ Decision = 'ask'; Reason = (Get-PullRequestSummary -PullRequestArgs $pullRequest.Groups['args'].Value) }
+        $pullRequestArgs = $pullRequest.Groups['args'].Value
+        $problems = @(Get-DescriptionProblems -Command $Command -PullRequestArgs $pullRequestArgs -WorkingDirectory $WorkingDirectory)
+        if ($problems.Count -gt 0) {
+            return @{ Decision = 'deny'; Reason = "Rewrite the pull request: $($problems -join ' ')`n`n$DescriptionShape" }
+        }
+        return @{ Decision = 'ask'; Reason = (Get-PullRequestSummary -PullRequestArgs $pullRequestArgs) }
     }
 
     $pushArgs = $push.Groups['args'].Value
@@ -46,6 +68,64 @@ function Get-GateDecision {
         return $null
     }
     return @{ Decision = 'ask'; Reason = (Get-PushSummary -RepoPath $repo -PushArgs $pushArgs) }
+}
+
+function Remove-TextBlocks {
+    param([string] $Command)
+
+    $withoutHeredocs = [regex]::Replace($Command, $HeredocPattern, 'TEXT')
+    return [regex]::Replace($withoutHeredocs, $HereStringPattern, "'TEXT'")
+}
+
+function Get-DescriptionProblems {
+    param([string] $Command, [string] $PullRequestArgs, [string] $WorkingDirectory)
+
+    $title = Get-OptionValue -Arguments $PullRequestArgs -Names @('--title', '-t')
+    if ($title -match '(^|\s)#\d+\b') {
+        'The title has a #1234 work item reference.'
+    }
+
+    $body = Get-PullRequestBody -Command $Command -PullRequestArgs $PullRequestArgs -WorkingDirectory $WorkingDirectory
+    if (-not $body) {
+        'It has no description. Pass one with --body (gh) or --description (az).'
+        return
+    }
+    if ($body -match '(?m)^#+\s*Summary\b') {
+        'The description has a "Summary" header.'
+    }
+    if ($body -match '(?mi)^#+\s*Test plan\b') {
+        'The description has a "Test plan" section.'
+    }
+    if ($body -notmatch '(?m)^#+\s*(Manually tested|Checked by Claude)\b') {
+        'The description does not say what was checked under "Manually tested" or "Checked by Claude".'
+    }
+    $lastLine = @($body -split '\r?\n' | Where-Object { $_.Trim() } | Select-Object -Last 1) -join ''
+    if ($lastLine.Trim() -ne '/claude code') {
+        'The description does not end with /claude code on its own line.'
+    }
+}
+
+function Get-PullRequestBody {
+    param([string] $Command, [string] $PullRequestArgs, [string] $WorkingDirectory)
+
+    foreach ($pattern in @($HeredocPattern, $HereStringPattern)) {
+        $block = [regex]::Match($Command, $pattern)
+        if ($block.Success) {
+            return $block.Groups['body'].Value
+        }
+    }
+    $inline = Get-OptionValue -Arguments $PullRequestArgs -Names @('--body', '-b', '--description', '-d')
+    if ($inline) {
+        return $inline
+    }
+    $file = Get-OptionValue -Arguments $PullRequestArgs -Names @('--body-file', '-F')
+    if ($file) {
+        $path = if ([IO.Path]::IsPathRooted($file)) { $file } else { Join-Path $WorkingDirectory $file }
+        if (Test-Path -LiteralPath $path) {
+            return Get-Content -LiteralPath $path -Raw
+        }
+    }
+    return $null
 }
 
 function Test-CompoundCommand {

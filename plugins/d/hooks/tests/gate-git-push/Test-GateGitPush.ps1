@@ -21,6 +21,8 @@ function Add-FixtureCommit {
 
 $repo = New-FixtureRepo
 $elsewhere = [IO.Path]::GetTempPath()
+$goodBody = "Links from the old service showed an error. Now they open.`n`n## Checked by Claude`n- An old link: opens.`n`n/claude code"
+$heredocPullRequest = "gh pr create --title `"Open old links`" --body `"`$(cat <<'EOF'`nLinks showed a `"temporarily unavailable`" error. Now they open.`n`n## Manually tested`n- An old link: opens.`n`n/claude code`nEOF`n)`""
 
 $cases = @(
     @{ Name = 'unrelated command'; Command = 'git status'; Expected = $null }
@@ -31,8 +33,13 @@ $cases = @(
     @{ Name = 'short force flag'; Command = 'git push -f'; Expected = 'deny: A force push' }
     @{ Name = 'force refspec'; Command = 'git push origin +master'; Expected = 'deny: A force push' }
     @{ Name = 'force after a config option'; Command = 'git -c core.quotepath=off push --force-with-lease'; Expected = 'deny: A force push' }
-    @{ Name = 'gh pull request'; Command = 'gh pr create --title "Fix a; b" --base master'; Expected = "ask: Open a pull request 'Fix a; b' from the current branch into 'master'" }
-    @{ Name = 'az pull request'; Command = 'az repos pr create --title Export --source-branch feat --target-branch master'; Expected = "ask: Open a pull request 'Export' from 'feat' into 'master'" }
+    @{ Name = 'gh pull request'; Command = "gh pr create --title `"Fix a; b`" --base master --body `"$goodBody`""; Expected = "ask: Open a pull request 'Fix a; b' from the current branch into 'master'" }
+    @{ Name = 'az pull request'; Command = "az repos pr create --title Export --source-branch feat --target-branch master --description `"$goodBody`""; Expected = "ask: Open a pull request 'Export' from 'feat' into 'master'" }
+    @{ Name = 'pull request body in a heredoc with quotes'; Command = $heredocPullRequest; Expected = "ask: Open a pull request 'Open old links'" }
+    @{ Name = 'pull request without a description'; Command = 'gh pr create --title Export'; Expected = 'deny: Rewrite the pull request: It has no description.' }
+    @{ Name = 'pull request with a Summary header'; Command = "gh pr create --title Export --body `"## Summary`n$goodBody`""; Expected = 'deny: Rewrite the pull request: The description has a "Summary" header.' }
+    @{ Name = 'pull request without the footer'; Command = "gh pr create --title Export --body `"Text.`n`n## Checked by Claude`n- A case: works.`""; Expected = 'deny: Rewrite the pull request: The description does not end with /claude code' }
+    @{ Name = 'pull request title with a work item'; Command = "gh pr create --title `"Export #123`" --body `"$goodBody`""; Expected = 'deny: Rewrite the pull request: The title has a #1234 work item reference.' }
     @{ Name = 'up to date'; Command = 'git push'; Expected = "ask: Nothing new to push: 'master'" }
     @{ Name = 'commits ahead of upstream'; Setup = { Add-FixtureCommit -Path $repo -Message 'One'; Add-FixtureCommit -Path $repo -Message 'Two' }; Command = 'git push'; Expected = "ask: Push 'master' to origin/master: 2 new commit(s)" }
     @{ Name = 'named remote and branch'; Command = 'git push origin master'; Expected = "ask: Push 'master' to origin/master: 2 new commit(s)" }
@@ -41,7 +48,7 @@ $cases = @(
     @{ Name = 'new remote branch'; Command = 'git push -u origin feat'; Expected = "ask: Push 'feat' to origin as a new branch 'feat': 3 commit(s) not on any remote yet" }
     @{ Name = 'opt-out skips a plain push'; Setup = { New-Item -ItemType Directory -Force (Join-Path $repo '.claude') | Out-Null; Set-Content -LiteralPath (Join-Path $repo '.claude/settings.local.json') -Value '{ "env": { "D_PUSH_WITHOUT_ASKING": "1" } }' }; Command = 'git push -u origin feat'; Expected = $null }
     @{ Name = 'opt-out still stops a force push'; Command = 'git push --force origin feat'; Expected = 'deny: A force push' }
-    @{ Name = 'opt-out still asks for a pull request'; Command = 'gh pr create'; Expected = 'ask: Open a pull request with no title' }
+    @{ Name = 'opt-out still asks for a pull request'; Command = "gh pr create --body `"$goodBody`""; Expected = 'ask: Open a pull request with no title' }
 )
 
 $failures = 0

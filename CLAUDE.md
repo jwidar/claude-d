@@ -59,9 +59,9 @@ instructions live. Update the name in all of:
 - `plugins/d/.claude-plugin/plugin.json` — `description`, and bump `version`
 - `.claude-plugin/marketplace.json` — `description`
 - `readme.md` — the skills / agents lists
-- the **claude-jonas** repo's `User_CLAUDE.md` — any skill referenced by name
-  **and path** (e.g. the mandatory `d:review` invocation rule hard-codes
-  `Skill(skill="…")` and `plugins/d/skills/…/SKILL.md`)
+- the **claude-jonas** repo's `User_CLAUDE.md`, `output-styles/` and `rules/` —
+  any skill or agent referenced by name (e.g. the mandatory `d:review`
+  invocation rule hard-codes `Skill(skill="…")`)
 - rename the skill directory with `git mv` so history is preserved
 
 Leave generic prose untouched (e.g. "code-review mindset" is English, not a
