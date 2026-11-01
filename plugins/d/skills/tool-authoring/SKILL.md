@@ -28,8 +28,9 @@ Walk this list from the top. Take the first carrier that fits.
   The text arrives next to the tool call, at the moment it matters, and costs
   nothing in other turns. A hook that checks a file's content after a write
   (comments, line endings, mermaid fences) beats any prose about it.
-- **Path-scoped rule** (`rules/*.md` in claude-jonas, delivered to
-  `~/.claude/rules/`, with `paths:` frontmatter such as `"**/*.cs"`). The rule
+- **Path-scoped rule** (`rules/*.md` in claude-jonas, copied to
+  `~/.claude/rules/` by `setup.ps1`, with `paths:` frontmatter such as
+  `"**/*.cs"`; a linked rules folder does not load them). The rule
   applies to one kind of file. It loads when Claude reads, writes, or edits a
   matching file. A plugin cannot ship a rule file, so rules live in
   claude-jonas.
