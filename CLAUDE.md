@@ -46,6 +46,8 @@ the headers and ask: "am I at this moment now?"
 - **A hook that reminds, and does not block, returns its text as
   `hookSpecificOutput.additionalContext`.** Only then does the text reach
   Claude.
+- **Text the user must see goes in `systemMessage`.** Plain stdout and
+  `additionalContext` reach only Claude.
 
 # Before renaming or adding a skill, an agent, or the plugin itself
 
