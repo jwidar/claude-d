@@ -22,8 +22,9 @@ things that work the same for anyone who installs the plugin.
     that warns when the launch path's casing does not match the filesystem's
     own, a `SessionStart` hook that reports when the session runs in a git
     worktree slot, a `PreToolUse` hook that asks before a push or a new
-    pull request and blocks a force push, and a hook that keeps the Azure
-    DevOps PAT out of `monitor-devops.local.md`
+    pull request and blocks a force push, a `PreToolUse` hook that asks
+    before an MCP tool posts a comment or a pull request, and a hook that
+    keeps the Azure DevOps PAT out of `monitor-devops.local.md`
 
 ## Install on a machine
 

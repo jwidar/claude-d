@@ -104,6 +104,18 @@
             "statusMessage": "Checking for a PAT"
           }
         ]
+      },
+      {
+        "matcher": "mcp__.*(comment|pull_request).*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-external-post.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the external post"
+          }
+        ]
       }
     ],
     "PostToolUse": [
