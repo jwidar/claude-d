@@ -98,10 +98,7 @@ handover file. Do not wait for the user to ask.
 
 # Before committing
 
-- **Git ceremony override:** this repo overrides the global git rules —
-  committing and pushing without asking is fine here (no CI, no central
-  review). Still run the `d:review` skill before committing when changes
-  warrant it.
+- Run the `d:review` skill before committing when the changes warrant it.
 - **Version bump check.** Run `git diff --cached --name-only` (or `git status`).
   If any file under `plugins/d/` is in the commit and
   `plugins/d/.claude-plugin/plugin.json` is not, stop: bump `version` and stage

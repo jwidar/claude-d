@@ -1,32 +1,62 @@
 ---
 name: tool-authoring
-description: Use when creating, editing, renaming, splitting, or reviewing a skill or an agent — any change to a SKILL.md, an agent .md, their frontmatter, or the instructions in User_CLAUDE.md. Also use when deciding whether a new capability should be a skill, an agent, or neither.
+description: Use when creating, editing, renaming, splitting, moving, or reviewing any instruction Claude loads for itself — a SKILL.md, an agent .md, an output style, a rule file, hook text, a permission rule, their frontmatter, or the instructions in User_CLAUDE.md or a repo CLAUDE.md. Also use when deciding where a new rule or capability should live.
 ---
 
-# Authoring Skills and Agents
+# Authoring instructions, skills, agents, and hooks
 
 Every rule here exists because the alternative was tried and drifted. Instructions
 that live in two places stop matching. Two components that both "handle" a topic
-mean neither is authoritative, and whichever fires first wins by accident.
+mean neither is authoritative, and whichever fires first wins by accident. A rule
+that is always in context but rarely relevant dilutes the rules that matter.
 
-# 1. Before adding a component: one owner per capability
+# 1. Before you place a rule: choose the carrier by when it must fire
 
-A capability is owned by exactly one component. Before writing a new skill or
-agent, find the existing one that covers the same ground. If there is one,
-**extend it or replace it** — do not add a second.
+If a rule must never be missed, it is a permission rule or a hook, not prose.
+Prose in context is read; it is not always applied.
 
-Choosing which:
+Walk this list from the top. Take the first carrier that fits.
 
-- **Agent** — when the work is a job to be performed on some input: reviewing,
-  rewriting, analysing, designing. It runs in its own context, so it can do heavy
-  reading without spending the main conversation's context, and it can run on a
-  cheaper model.
-- **Skill** — when the work is guidance the main conversation must follow while
-  doing something else: a policy, a procedure, a set of conventions. Nothing to
-  hand off, nothing to run separately.
-- **Neither** — when it is one sentence. Put it in `User_CLAUDE.md`.
+- **Permission rule** (`deny` / `ask` in `User_settings.json`). The action must
+  never happen, or must always get the user's approval. The harness enforces it
+  in every permission mode, also in auto mode, and a hook cannot override it.
+  Write each Bash rule twice: `Bash(git push *)` and `PowerShell(git push *)`.
+  The prose that remains states only the reason, if the reason is not obvious.
+- **Hook with `additionalContext`.** The rule applies at a tool call: before a
+  commit, after a write to a memory file, when a PR is created. Use the `if`
+  field (`"if": "Bash(git commit *)"`) so the hook fires only for that command.
+  The text arrives next to the tool call, at the moment it matters, and costs
+  nothing in other turns. A hook that checks a file's content after a write
+  (comments, line endings, mermaid fences) beats any prose about it.
+- **Path-scoped rule** (`rules/*.md` in claude-jonas, delivered to
+  `~/.claude/rules/`, with `paths:` frontmatter such as `"**/*.cs"`). The rule
+  applies to one kind of file. It loads when Claude reads, writes, or edits a
+  matching file. A plugin cannot ship a rule file, so rules live in
+  claude-jonas.
+- **Output style** (`output-styles/` in the plugin). The rule shapes every
+  message: tone, length, format, how to present a choice. It sits in the
+  system prompt.
+- **`User_CLAUDE.md`.** The rule applies on most turns, in every project, and
+  no tool call or file type marks its moment. Keep each rule there to a few
+  lines. Keep the file under 200 lines.
+- **Skill.** The content is a procedure, a set of examples, or anything longer
+  than a paragraph, and the moment is a task the model recognizes from the
+  request. When the model may miss the moment, add a hook that names the skill.
+  Do not add a pointer line to `User_CLAUDE.md`; the skill's description already
+  is that pointer.
+- **Agent.** The work is a job on some input: review, design, rewrite,
+  analysis. It runs in its own context and can run on a cheaper model.
 
-# 2. When a skill routes to an agent: the skill is a trigger, not a second copy
+Before you add any text that loads in every session, ask: does this apply on
+every turn? If not, which carrier above brings it in at the right moment?
+
+# 2. Before adding a component: one owner per capability
+
+A capability is owned by exactly one component. Before writing a new skill,
+agent, hook, or rule file, find the existing one that covers the same ground. If
+there is one, **extend it or replace it** — do not add a second.
+
+# 3. When a skill routes to an agent: the skill is a trigger, not a second copy
 
 When a capability is owned by an agent, the skill's entire job is routing:
 
@@ -42,33 +72,30 @@ The reverse is not duplication: an agent runs in a fresh context and cannot read
 the skill file, so the agent must be fully self-contained. That is the point of
 the split — the rules live in the agent, and only the agent.
 
-# 3. When a rule could live in two files: one home across files
+# 4. When a rule could live in two files: one home across files
 
-Any given instruction lives in exactly one **file** among the files that load
-into the same session. Other files refer to it by name. Two repo `CLAUDE.md`
-files never load together, so each repo may carry its own copy of a repo-level
-rule.
+Any given instruction lives in exactly one **carrier** among those that load into
+the same session: `User_CLAUDE.md`, a rule file, the output style, a skill, hook
+text. Other carriers refer to it by name. Two repo `CLAUDE.md` files never load
+together, so each repo may carry its own copy of a repo-level rule. An agent is
+the exception under rule 3.
 
-- `User_CLAUDE.md` is loaded into every session. A rule that must be in force on
-  every turn, whether or not a skill fires — "write no comment", "never start
-  services" — lives there in full. Procedures, examples, and anything longer
-  than a paragraph belong in a skill; `User_CLAUDE.md` then holds the skill name
-  and the one-line reason to invoke it.
 - `CLAUDE.md` (repo) holds repo facts — layout, maintenance steps, conventions
   specific to this repository. Not portable guidance.
-- Skills and agents hold the rules themselves, under rule 2.
+- A permission rule or a hook replaces prose; it does not sit next to a full
+  copy of it.
 
-When you find the same rule in two files that load together, delete one. Do not
-"keep them in sync". Inside one file, rule 4 applies — repetition there is
+When you find the same rule in two carriers that load together, delete one. Do
+not "keep them in sync". Inside one file, rule 5 applies — repetition there is
 intended.
 
-# 4. When you file a rule in an instruction file: by moment, not by topic
+# 5. When you file a rule in an instruction file: by moment, not by topic
 
 Applies to every file Claude loads as its own instructions: `User_CLAUDE.md`,
-every repo `CLAUDE.md`, and skill bodies. It does **not** apply to user-facing
-documentation — readmes, docs, wiki pages. Those are written for a human reader
-who navigates by topic; this rule is about how the model consumes instructions
-for itself, which is a different problem.
+every repo `CLAUDE.md`, rule files, the output style, and skill bodies. It does
+**not** apply to user-facing documentation — readmes, docs, wiki pages. Those are
+written for a human reader who navigates by topic; this rule is about how the
+model consumes instructions for itself, which is a different problem.
 
 An instruction in context is not an instruction applied. The model retrieves
 what the current action cues, and a header is that cue. A rule under a topic
@@ -90,20 +117,34 @@ context the whole time.
   keep a topic header; a section that holds a rule may not.
 - **A rule that applies at several moments is written under each of them.** Do
   not deduplicate across sections. Do not cross-reference ("see above") in place
-  of the rule; the reader at that moment has not read "above".
+  of the rule; the reader at that moment has not read "above". When a moment is
+  a tool call or a file type, move the rule to a hook or a rule file (rule 1)
+  instead of repeating it.
 - **`User_CLAUDE.md` and each repo `CLAUDE.md` open with a "How this file is
   organized" section** stating these conventions, so the next editor keeps them.
-  Skills and agents do not — this skill is that section for them.
-- **When a rule was skipped although it was in context, move it or repeat it**
-  under the moment where it should have fired. Do not add emphasis, bold, or a
-  caveat — those do not change which header the model is reading under. If the
-  rule must never be missed, it is a hook, not prose.
+  Skills, agents, and rule files do not — this skill is that section for them.
+- **When a rule was skipped although it was in context, move it** to a carrier
+  higher in rule 1's list, or repeat it under the moment where it should have
+  fired. Do not add emphasis, bold, or a caveat — those do not change which
+  header the model is reading under.
 
-# 5. When you write frontmatter: trigger language only
+# 6. When you write hook text
+
+- Return it as `hookSpecificOutput.additionalContext`. Only then does the text
+  reach Claude.
+- Write it as facts and instructions about the task ("This commit needs …"), not
+  as a message from the system. Text that poses as a system command can trip
+  prompt-injection defenses.
+- Keep it to what applies at that call. The limit is 10 000 characters; a few
+  lines is the target.
+- The `if` filter is best-effort. A hook that must block is backed by a
+  permission rule.
+
+# 7. When you write frontmatter: trigger language only
 
 The `description:` on a skill or an agent states **when it fires** — the
 situations, the phrasings the user might use, the kinds of files or tasks
-involved. Nothing else.
+involved. Nothing else. A rule file's frontmatter holds only `paths:`.
 
 No explanation of what the component does. No summary of its rules. No rationale,
 no benefits, no scope caveats. All of that is body content, loaded only once the
@@ -122,16 +163,18 @@ description: Manages comments in code. Comments that restate the code add
   and explains what a comment must contain to earn its place.
 ```
 
-Agent descriptions keep the `<example>` blocks this repo already uses — those are
-trigger language, showing the situation that should cause the agent to be
-launched. Keep the commentary inside them about *why this is the moment to
-invoke*, not about what the agent knows.
+Agent descriptions keep at most two short `<example>` blocks — those are trigger
+language, showing the situation that should cause the agent to be launched. Keep
+the commentary inside them about *why this is the moment to invoke*, not about
+what the agent knows.
 
-# 6. Before finishing
+# 8. Before finishing
 
-- Reread the new component against rule 1: name the one capability it owns, in
+- Reread the new component against rule 2: name the one capability it owns, in
   one sentence. If that takes two sentences, split it or drop it.
-- Grep the repo for the topic. Anything that now duplicates the new component
+- Check the carrier against rule 1 once more. Text that loads in every session
+  must earn that cost.
+- Grep both repos for the topic. Anything that now duplicates the new component
   gets deleted, not updated.
 - Follow the name-sync and version-bump checklist in the repo's `CLAUDE.md`. A
   new or renamed component that is missing from one of those lists leaves stale
