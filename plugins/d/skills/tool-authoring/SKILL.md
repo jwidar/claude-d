@@ -33,9 +33,10 @@ Walk this list from the top. Take the first carrier that fits.
   applies to one kind of file. It loads when Claude reads, writes, or edits a
   matching file. A plugin cannot ship a rule file, so rules live in
   claude-jonas.
-- **Output style** (`output-styles/` in the plugin). The rule shapes every
-  message: tone, length, format, how to present a choice. It sits in the
-  system prompt.
+- **Output style** (`output-styles/` in claude-jonas, linked to
+  `~/.claude/output-styles/`). The rule shapes every message: tone, length,
+  format, how to present a choice. It sits in the system prompt. A style
+  file edit needs a restart.
 - **`User_CLAUDE.md`.** The rule applies on most turns, in every project, and
   no tool call or file type marks its moment. Keep each rule there to a few
   lines. Keep the file under 200 lines.

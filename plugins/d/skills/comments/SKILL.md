@@ -111,8 +111,7 @@ from reading the code**:
 
 # When writing a comment that earns its place: how it must read
 
-The same rule as messages to the user — see the **How to talk to me** section
-of `User_CLAUDE.md`. A comment is prose, and dense prose is exactly what
+The same rule as messages to the user, from the output style. A comment is prose, and dense prose is exactly what
 makes comments not worth reading.
 
 - Plain sentences. No invented shorthand, no acronyms introduced without
