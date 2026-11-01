@@ -23,6 +23,13 @@
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/report-worktree-slot.ps1"],
             "timeout": 10,
             "statusMessage": "Checking for a worktree slot"
+          },
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/guard-ado-pat.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking for a PAT in the monitor-devops settings"
           }
         ]
       }
@@ -74,6 +81,27 @@
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-git-push.ps1"],
             "timeout": 10,
             "statusMessage": "Checking the pull request"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Write(**/monitor-devops.local.md)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/guard-ado-pat.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking for a PAT"
+          },
+          {
+            "type": "command",
+            "if": "Edit(**/monitor-devops.local.md)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/guard-ado-pat.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking for a PAT"
           }
         ]
       }
