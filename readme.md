@@ -20,8 +20,9 @@ things that work the same for anyone who installs the plugin.
     (`dotnet format`) to the `.cs` files touched by a `Write`/`Edit`, a `Stop`
     hook that summarizes the formatting time spent, a `SessionStart` hook
     that warns when the launch path's casing does not match the filesystem's
-    own, and a `SessionStart` hook that reports when the session runs in a git
-    worktree slot
+    own, a `SessionStart` hook that reports when the session runs in a git
+    worktree slot, and a `PreToolUse` hook that asks before a push or a new
+    pull request and blocks a force push
 
 ## Install on a machine
 
