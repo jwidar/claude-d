@@ -85,6 +85,107 @@
         ]
       },
       {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(*dotnet run*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "Bash(*dotnet watch*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "Bash(*npm *)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "Bash(*pnpm *)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "Bash(*yarn *)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "Bash(*Start-Process*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(*dotnet run*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(*dotnet watch*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(*npm *)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(*pnpm *)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(*yarn *)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(*Start-Process*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-service-start.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the program start"
+          }
+        ]
+      },
+      {
         "matcher": "Write|Edit",
         "hooks": [
           {
