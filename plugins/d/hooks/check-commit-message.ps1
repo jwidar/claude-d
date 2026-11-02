@@ -1,7 +1,7 @@
 $CommitPattern = '(^|[\s;&|(])git(\s+(-C\s+(?<repo>"[^"]+"|\S+)|-c\s+\S+|--[\w-]+(=\S+)?))*\s+commit\b(?<args>[\s\S]*)'
 $HeredocPattern = '<<-?\s*[''"]?(?<tag>\w+)[''"]?\r?\n(?<body>[\s\S]*?)\r?\n\s*\k<tag>\b'
 $HereStringPattern = '@(?<quote>[''"])\r?\n(?<body>[\s\S]*?)\r?\n\k<quote>@'
-$MessageOptionPattern = '(^|\s)(-m|--message)(\s+|=)("(?<text>[^"]*)"|''(?<text>[^'']*)'')'
+$MessageOptionPattern = '(^|\s)(-[a-zA-Z]*m|--message)(\s+|=)("(?<text>[^"]*)"|''(?<text>[^'']*)'')'
 $NotCommandFormPattern = '^(?<word>[A-Za-z]+(ed|ing))\b'
 $ImperativeWordsEndingLikePast = @('Embed', 'Need', 'Feed', 'Seed', 'Speed', 'Shed', 'Proceed', 'Exceed', 'Succeed', 'Heed', 'Weed', 'Shred',
     'Bring', 'String', 'Ring', 'Sing', 'Swing', 'Spring', 'Wing')

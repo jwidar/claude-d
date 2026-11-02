@@ -12,6 +12,8 @@ $hereString = "git commit -m @'`nFixed the upload`n'@"
 
 $cases = @(
     @{ Name = 'not a commit'; Command = 'git status'; Expected = $null }
+    @{ Name = 'message in a short flag group'; Command = 'git commit -am "Added a test"'; Expected = 'deny: The commit subject' }
+    @{ Name = 'good message in a short flag group'; Command = 'git commit -am "Add a test"'; Expected = $null }
     @{ Name = 'command form'; Command = 'git commit -m "Add export retry"'; Expected = $null }
     @{ Name = 'past tense'; Command = 'git commit -m "Added export retry"'; Expected = "deny: The commit subject 'Added export retry'" }
     @{ Name = 'ing form'; Command = 'git commit -m "Fixing the upload"'; Expected = "deny: The commit subject 'Fixing the upload'" }
