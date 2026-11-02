@@ -203,6 +203,22 @@
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/check-commit-message.ps1"],
             "timeout": 10,
             "statusMessage": "Checking the commit message"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git *commit*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/repair-line-endings-before-commit.ps1"],
+            "timeout": 10,
+            "statusMessage": "Repairing line endings"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(git *commit*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/repair-line-endings-before-commit.ps1"],
+            "timeout": 10,
+            "statusMessage": "Repairing line endings"
           }
         ]
       },

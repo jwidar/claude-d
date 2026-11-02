@@ -24,7 +24,8 @@ things that work the same for anyone who installs the plugin.
     `SessionStart` hook that reports when the session runs in a git
     worktree slot, a `PreToolUse` hook that asks before a push or a new
     pull request, checks the PR description, and blocks a force push, a
-    `PreToolUse` hook that checks a commit message, a `PreToolUse` hook that asks
+    `PreToolUse` hook that checks a commit message, a `PreToolUse` hook that
+    repairs line endings in the changed files before a commit, a `PreToolUse` hook that asks
     before an MCP tool posts a comment or a pull request, a `PreToolUse`
     hook that asks before Claude starts a service or program, a hook that
     keeps the Azure DevOps PAT out of `monitor-devops.local.md`, and a
