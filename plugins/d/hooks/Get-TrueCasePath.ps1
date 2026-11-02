@@ -1,10 +1,6 @@
 # Shared helper: resolve a path to the casing the filesystem actually stores.
 #
-# Dot-sourced by two callers, which is why it lives in its own file rather than
-# being written twice:
-#   - hooks/warn-noncanonical-cwd.ps1, via $PSScriptRoot
-#   - the PowerShell profile block that setup.ps1 generates, via the repo path
-#     baked in at install time
+# Dot-sourced by hooks/warn-noncanonical-cwd.ps1, and usable by any other script.
 #
 # Windows paths are case-insensitive but case-PRESERVING, so the only way to
 # learn a path's real casing is to ask each parent directory for its child's
