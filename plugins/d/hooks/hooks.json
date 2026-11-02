@@ -211,7 +211,7 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Write(**/monitor-devops.local.md)",
+            "if": "Write(//**/monitor-devops.local.md)",
             "command": "powershell",
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/guard-ado-pat.ps1"],
             "timeout": 10,
@@ -219,7 +219,7 @@
           },
           {
             "type": "command",
-            "if": "Edit(**/monitor-devops.local.md)",
+            "if": "Edit(//**/monitor-devops.local.md)",
             "command": "powershell",
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/guard-ado-pat.ps1"],
             "timeout": 10,
@@ -265,7 +265,7 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Write(**/memory/*.md)",
+            "if": "Write(~/.claude/projects/**/memory/*.md)",
             "command": "powershell",
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/record-feedback-memory.ps1"],
             "timeout": 10,

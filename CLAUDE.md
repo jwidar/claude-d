@@ -47,6 +47,9 @@ the headers and ask: "am I at this moment now?"
   Claude.
 - **Text the user must see goes in `systemMessage`.** Plain stdout and
   `additionalContext` reach only Claude.
+- **A path in an `if` filter is relative to the working directory.** For a file
+  that can be outside it, start the path with `~/` or `//`. A unit test does not
+  pass through the filter, so test a new filter in a live session.
 
 # Before renaming or adding a skill, an agent, or the plugin itself
 
