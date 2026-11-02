@@ -259,6 +259,19 @@
             "statusMessage": "Checking added comments"
           }
         ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Write(**/memory/*.md)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/record-feedback-memory.ps1"],
+            "timeout": 10,
+            "statusMessage": "Adding feedback to the backlog"
+          }
+        ]
       }
     ],
     "Stop": [
