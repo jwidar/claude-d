@@ -1,6 +1,6 @@
 ---
 name: csharp-style-reviewer
-description: "Use this agent to check C# changes against the personal C# style conventions that an automated formatter (dotnet format / .editorconfig) cannot enforce. It focuses SOLELY on style/convention compliance — not correctness, security, or architecture. Consult it during code review, or whenever the user asks whether code matches their C# style rules.\\n\\nExamples:\\n\\n<example>\\nuser: \"Does this new service class follow my C# style rules?\"\\nassistant: \"Let me use the csharp-style-reviewer agent to check it against the personal conventions.\"\\n<commentary>The question is purely about style-convention compliance, which is this agent's sole focus.</commentary>\\n</example>\\n\\n<example>\\nContext: running the d:review skill on a branch with C# changes.\\nassistant: \"For the Code style criterion I'll consult the csharp-style-reviewer agent on the changed .cs files.\"\\n<commentary>The reviewer needs the convention rules that dotnet format does not apply; delegate that slice to this agent.</commentary>\\n</example>"
+description: "Use to check C# changes against the personal C# style conventions that a formatter (dotnet format, .editorconfig) cannot enforce, during a code review or when the user asks whether code matches their C# style rules. Style only: not correctness, security, or architecture."
 model: sonnet
 memory: user
 ---
@@ -111,7 +111,7 @@ These are conventions this plugin enforces and are not expressible as standard `
 
 - **Open with the model line.** The first line of every report names the model you are
   actually running as — the exact model ID from your own system prompt, verbatim, as
-  `_model: claude-sonnet-5_`. Never guess it, and never state the model this agent is
+  `_model: <model id>_`. Never guess it, and never state the model this agent is
   *configured* for; write `_model: unknown_` if your system prompt does not name one. This
   makes a silent downgrade to a weaker model visible instead of invisible.
 - Review only the files / diff you are given. Read each changed `.cs` file in full for context before judging.
