@@ -15,7 +15,7 @@ things that work the same for anyone who installs the plugin.
     `tool-authoring`, `debug-setup`, `expert`, `caller-first`,
     `iis-config`, `dotnet-format`, `plugin-feedback`, `show-backlog`,
     `worktree-slot`, `secure-design`
-  - agents: `systems-architect`, `csharp-style-reviewer`, `avalonia-ui-specialist`
+  - agents: `systems-architect`, `csharp-style-reviewer`
   - hooks: a `PostToolUse` hook that applies `.editorconfig` formatting
     (`dotnet format`) to the `.cs` files touched by a `Write`/`Edit`, a `Stop`
     hook that summarizes the formatting time spent, a `SessionStart` hook

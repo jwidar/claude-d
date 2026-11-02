@@ -15,8 +15,6 @@ the choice sticky for the rest of the session.
 |----------------|--------------------------|-------------------------------------------|
 | `architect`    | `d:systems-architect`    | Architecture, patterns, data flow, SOLID  |
 | `csharp-style` | `d:csharp-style-reviewer`| C# style conventions beyond the formatter |
-| `avalonia`     | `d:avalonia-ui-specialist`| Avalonia UI, XAML, MVVM, styling          |
-
 # When the user addresses an expert: routing
 
 1. **Check for a sticky choice.** Read `<scratchpad>/expert-choice.txt`. If it
