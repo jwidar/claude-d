@@ -1,13 +1,16 @@
-$PushPattern = '(^|[\s;&|(])git(\s+(-C\s+(?<repo>"[^"]+"|\S+)|-c\s+\S+|--[\w-]+(=\S+)?))*\s+push\b(?<args>("[^"]*"|''[^'']*''|[^;&|\r\n"''])*)'
+$PushPattern = '(^|[\s;&|(/\\])git(\.exe)?["'']?(\s+(-C\s+(?<repo>"[^"]+"|\S+)|-c\s+("[^"]*"|\S+)|--(git-dir|work-tree|namespace|exec-path|config-env)\s+("[^"]*"|\S+)|--[\w-]+(=\S+)?))*\s+push\b(?<args>("[^"]*"|''[^'']*''|[^;&|\r\n"''])*)'
 $PullRequestPattern = '(^|[\s;&|(])(gh\s+pr\s+create|az\s+repos\s+pr\s+create)\b(?<args>("[^"]*"|''[^'']*''|[^;&|\r\n"''])*)'
 $QuotedTextPattern = '"[^"]*"|''[^'']*'''
 $HeredocPattern = '<<-?\s*[''"]?(?<tag>\w+)[''"]?\r?\n(?<body>[\s\S]*?)\r?\n\s*\k<tag>\b'
 $HereStringPattern = '@(?<quote>[''"])\r?\n(?<body>[\s\S]*?)\r?\n\k<quote>@'
 $CompoundPattern = '&&|[;|\r\n]'
-$ForcePattern = '(^|\s)(--force(-with-lease)?\b|-[a-zA-Z]*f\b|\+\S)'
+$ForcePattern = '(^|\s)(--force(-with-lease)?\b|-[a-zA-Z]*f[a-zA-Z]*(\s|$)|\+\S)'
+$RemoteRemovalPattern = '(^|\s)(--delete\b|--mirror\b|--prune\b|-[a-zA-Z]*d[a-zA-Z]*(\s|$)|:\S)'
+$WidePushPattern = '(^|\s)(--all\b|--branches\b|--tags\b|:(\s|$))'
 
 $CompoundReason = 'This command runs {0} together with other commands. Run it as a command of its own, with nothing before or after it, so that the user can read the approval prompt.'
 $ForceReason = 'A force push is the user''s own action. Do not run it. Stop, and give the user the exact command to run with !.'
+$RemoteRemovalReason = 'This push can delete or overwrite refs on the remote (--delete, -d, :branch, --mirror, or --prune). That is the user''s own action. Do not run it. Stop, and give the user the exact command to run with !.'
 $PullRequestRecord = 'A pull request is a permanent record: on Azure DevOps it can only be abandoned, not deleted.'
 $DescriptionShape = @'
 A PR description is written for non-developers who want to grasp at a high level what was done. Write it in ASD-STE100.
@@ -58,9 +61,15 @@ function Get-GateDecision {
         return @{ Decision = 'ask'; Reason = (Get-PullRequestSummary -PullRequestArgs $pullRequestArgs) }
     }
 
-    $pushArgs = $push.Groups['args'].Value
+    $pushArgs = $push.Groups['args'].Value -replace '["'']', ''
     if ($pushArgs -match $ForcePattern) {
         return @{ Decision = 'deny'; Reason = $ForceReason }
+    }
+    if ($pushArgs -match $RemoteRemovalPattern) {
+        return @{ Decision = 'deny'; Reason = $RemoteRemovalReason }
+    }
+    if ($pushArgs -match $WidePushPattern) {
+        return @{ Decision = 'ask'; Reason = "Push more than one branch or tag: git push$($pushArgs.TrimEnd())." }
     }
 
     $repo = Get-RepoPath -Push $push -WorkingDirectory $WorkingDirectory
@@ -162,6 +171,11 @@ function Test-PushWithoutAsking {
 function Get-PushSummary {
     param([string] $RepoPath, [string] $PushArgs)
 
+    $positional = @($PushArgs.Trim() -split '\s+' | Where-Object { $_ -and -not $_.StartsWith('-') -and $_ -notmatch '^\d*>' })
+    if ($positional.Count -gt 2) {
+        return "Push more than one branch or tag: git push$($PushArgs.TrimEnd())."
+    }
+
     $target = Get-PushTarget -RepoPath $RepoPath -PushArgs $PushArgs
     if (-not $target.RemoteBranch) {
         return "Push '$($target.Local)': it has no upstream branch and no remote was named, so git may refuse the push."
@@ -183,7 +197,7 @@ function Get-PushSummary {
 function Get-PushTarget {
     param([string] $RepoPath, [string] $PushArgs)
 
-    $positional = @($PushArgs.Trim() -split '\s+' | Where-Object { $_ -and -not $_.StartsWith('-') })
+    $positional = @($PushArgs.Trim() -split '\s+' | Where-Object { $_ -and -not $_.StartsWith('-') -and $_ -notmatch '^\d*>' })
     $current = git -C $RepoPath branch --show-current
     if (-not $current) {
         $current = 'HEAD'

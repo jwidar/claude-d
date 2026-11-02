@@ -33,6 +33,24 @@ $cases = @(
     @{ Name = 'short force flag'; Command = 'git push -f'; Expected = 'deny: A force push' }
     @{ Name = 'force refspec'; Command = 'git push origin +master'; Expected = 'deny: A force push' }
     @{ Name = 'force after a config option'; Command = 'git -c core.quotepath=off push --force-with-lease'; Expected = 'deny: A force push' }
+    @{ Name = 'force in a short flag group, first'; Command = 'git push -fu origin master'; Expected = 'deny: A force push' }
+    @{ Name = 'force in a short flag group, last'; Command = 'git push -uf origin master'; Expected = 'deny: A force push' }
+    @{ Name = 'quoted force refspec'; Command = 'git push origin "+master"'; Expected = 'deny: A force push' }
+    @{ Name = 'delete flag'; Command = 'git push --delete origin feat'; Expected = 'deny: This push can delete' }
+    @{ Name = 'short delete flag'; Command = 'git push -d origin feat'; Expected = 'deny: This push can delete' }
+    @{ Name = 'delete refspec'; Command = 'git push origin :feat'; Expected = 'deny: This push can delete' }
+    @{ Name = 'mirror'; Command = 'git push --mirror origin'; Expected = 'deny: This push can delete' }
+    @{ Name = 'prune'; Command = 'git push --prune origin'; Expected = 'deny: This push can delete' }
+    @{ Name = 'all branches'; Command = 'git push --all origin'; Expected = 'ask: Push more than one branch or tag' }
+    @{ Name = 'all tags'; Command = 'git push --tags'; Expected = 'ask: Push more than one branch or tag' }
+    @{ Name = 'matching refs'; Command = 'git push origin :'; Expected = 'ask: Push more than one branch or tag' }
+    @{ Name = 'several refs'; Command = 'git push origin master feat'; Expected = 'ask: Push more than one branch or tag' }
+    @{ Name = 'refspec with a colon is not a delete'; Command = 'git push origin master:master'; Expected = "ask: Nothing new to push: 'master'" }
+    @{ Name = 'git.exe'; Command = 'git.exe push --force'; Expected = 'deny: A force push' }
+    @{ Name = 'git by full path'; Command = '"C:\Program Files\Git\bin\git.exe" push --force'; Expected = 'deny: A force push' }
+    @{ Name = 'option with a separate value'; Command = 'git --git-dir .git push --force'; Expected = 'deny: A force push' }
+    @{ Name = 'config with a quoted value'; Command = 'git -c "a.b=c d" push --force'; Expected = 'deny: A force push' }
+    @{ Name = 'word in a path is not git'; Command = 'mygit push'; Expected = $null }
     @{ Name = 'gh pull request'; Command = "gh pr create --title `"Fix a; b`" --base master --body `"$goodBody`""; Expected = "ask: Open a pull request 'Fix a; b' from the current branch into 'master'" }
     @{ Name = 'az pull request'; Command = "az repos pr create --title Export --source-branch feat --target-branch master --description `"$goodBody`""; Expected = "ask: Open a pull request 'Export' from 'feat' into 'master'" }
     @{ Name = 'pull request body in a heredoc with quotes'; Command = $heredocPullRequest; Expected = "ask: Open a pull request 'Open old links'" }
@@ -48,6 +66,9 @@ $cases = @(
     @{ Name = 'new remote branch'; Command = 'git push -u origin feat'; Expected = "ask: Push 'feat' to origin as a new branch 'feat': 3 commit(s) not on any remote yet" }
     @{ Name = 'opt-out skips a plain push'; Setup = { New-Item -ItemType Directory -Force (Join-Path $repo '.claude') | Out-Null; Set-Content -LiteralPath (Join-Path $repo '.claude/settings.local.json') -Value '{ "env": { "D_PUSH_WITHOUT_ASKING": "1" } }' }; Command = 'git push -u origin feat'; Expected = $null }
     @{ Name = 'opt-out still stops a force push'; Command = 'git push --force origin feat'; Expected = 'deny: A force push' }
+    @{ Name = 'opt-out still stops a force in a flag group'; Command = 'git push -fu origin feat'; Expected = 'deny: A force push' }
+    @{ Name = 'opt-out still stops a delete'; Command = 'git push -d origin feat'; Expected = 'deny: This push can delete' }
+    @{ Name = 'opt-out still asks for all branches'; Command = 'git push --all origin'; Expected = 'ask: Push more than one branch or tag' }
     @{ Name = 'opt-out still asks for a pull request'; Command = "gh pr create --body `"$goodBody`""; Expected = 'ask: Open a pull request with no title' }
 )
 
