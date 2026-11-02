@@ -1,6 +1,6 @@
 ---
 name: tool-authoring
-description: Use when creating, editing, renaming, splitting, moving, or reviewing any instruction Claude loads for itself — a SKILL.md, an agent .md, an output style, a rule file, hook text, a permission rule, their frontmatter, or the instructions in User_CLAUDE.md or a repo CLAUDE.md. Also use when deciding where a new rule or capability should live.
+description: Use when creating, editing, renaming, splitting, moving, or reviewing any instruction Claude loads for itself — a SKILL.md, an agent .md, an output style, a rule file, hook text, a permission rule, their frontmatter, or the instructions in a user-level or repo CLAUDE.md. Also use when deciding where a new rule or capability should live.
 ---
 
 # Authoring instructions, skills, agents, and hooks
@@ -28,23 +28,20 @@ Walk this list from the top. Take the first carrier that fits.
   The text arrives next to the tool call, at the moment it matters, and costs
   nothing in other turns. A hook that checks a file's content after a write
   (comments, line endings, mermaid fences) beats any prose about it.
-- **Path-scoped rule** (`rules/*.md` in claude-jonas, copied to
-  `~/.claude/rules/` by `setup.ps1`, with `paths:` frontmatter such as
-  `"**/*.cs"`; a linked rules folder does not load them). The rule
-  applies to one kind of file. It loads when Claude reads, writes, or edits a
-  matching file. A plugin cannot ship a rule file, so rules live in
-  claude-jonas.
-- **Output style** (`output-styles/` in claude-jonas, linked to
-  `~/.claude/output-styles/`). The rule shapes every message: tone, length,
-  format, how to present a choice. It sits in the system prompt. A style
-  file edit needs a restart.
-- **`User_CLAUDE.md`.** The rule applies on most turns, in every project, and
+- **Path-scoped rule** (a real file in `~/.claude/rules/`, with `paths:`
+  frontmatter such as `"**/*.cs"`; a linked rules folder does not load them).
+  The rule applies to one kind of file. It loads when Claude reads, writes, or
+  edits a matching file. A plugin cannot ship a rule file.
+- **Output style** (`~/.claude/output-styles/`). The rule shapes every message:
+  tone, length, format, how to present a choice. It sits in the system prompt.
+  A style file edit needs a restart.
+- **The user-level `CLAUDE.md`.** The rule applies on most turns, in every project, and
   no tool call or file type marks its moment. Keep each rule there to a few
   lines. Keep the file under 200 lines.
 - **Skill.** The content is a procedure, a set of examples, or anything longer
   than a paragraph, and the moment is a task the model recognizes from the
   request. When the model may miss the moment, add a hook that names the skill.
-  Do not add a pointer line to `User_CLAUDE.md`; the skill's description already
+  Do not add a pointer line to the user-level `CLAUDE.md`; the skill's description already
   is that pointer.
 - **Agent.** The work is a job on some input: review, design, rewrite,
   analysis. It runs in its own context and can run on a cheaper model.
@@ -77,7 +74,7 @@ the split — the rules live in the agent, and only the agent.
 # 4. When a rule could live in two files: one home across files
 
 Any given instruction lives in exactly one **carrier** among those that load into
-the same session: `User_CLAUDE.md`, a rule file, the output style, a skill, hook
+the same session: the user-level `CLAUDE.md`, a rule file, the output style, a skill, hook
 text. Other carriers refer to it by name. Two repo `CLAUDE.md` files never load
 together, so each repo may carry its own copy of a repo-level rule. An agent is
 the exception under rule 3.
@@ -93,8 +90,8 @@ intended.
 
 # 5. When you file a rule in an instruction file: by moment, not by topic
 
-Applies to every file Claude loads as its own instructions: `User_CLAUDE.md`,
-every repo `CLAUDE.md`, rule files, the output style, and skill bodies. It does
+Applies to every file Claude loads as its own instructions: the user-level
+`CLAUDE.md`, every repo `CLAUDE.md`, rule files, the output style, and skill bodies. It does
 **not** apply to user-facing documentation — readmes, docs, wiki pages. Those are
 written for a human reader who navigates by topic; this rule is about how the
 model consumes instructions for itself, which is a different problem.
@@ -125,7 +122,7 @@ context the whole time.
   of the rule; the reader at that moment has not read "above". When a moment is
   a tool call or a file type, move the rule to a hook or a rule file (rule 1)
   instead of repeating it.
-- **`User_CLAUDE.md` and each repo `CLAUDE.md` open with a "How this file is
+- **The user-level `CLAUDE.md` and each repo `CLAUDE.md` open with a "How this file is
   organized" section** stating these conventions, so the next editor keeps them.
   Skills, agents, and rule files do not — this skill is that section for them.
 - **When a rule was skipped although it was in context, move it** to a carrier

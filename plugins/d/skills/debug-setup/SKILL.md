@@ -7,7 +7,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 # Setting up debug support in a repo
 
 The run/debug contract itself — who starts services, who kills them — lives in
-`User_CLAUDE.md` and is always in force. This skill is only the file scaffolding
+the user's own instructions and is always in force. This skill is only the file scaffolding
 that makes that contract concrete in a repo that does not have it yet.
 
 When the user first asks for debug support in a repo, create both of the

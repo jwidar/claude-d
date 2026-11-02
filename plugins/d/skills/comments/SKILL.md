@@ -105,7 +105,7 @@ from reading the code**:
 
 # When writing a comment that earns its place: how it must read
 
-The same rule as messages to the user, from the output style. A comment is prose, and dense prose is exactly what
+A comment is prose, and dense prose is exactly what
 makes comments not worth reading.
 
 - Plain sentences. No invented shorthand, no acronyms introduced without

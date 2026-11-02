@@ -1,6 +1,6 @@
 ---
 name: csharp-style-reviewer
-description: "Use to check C# changes against the personal C# style conventions that a formatter (dotnet format, .editorconfig) cannot enforce, during a code review or when the user asks whether code matches their C# style rules. Style only: not correctness, security, or architecture."
+description: "Use to check C# changes against the C# style conventions that a formatter (dotnet format, .editorconfig) cannot enforce, during a code review or when the user asks whether code matches the C# style rules. Style only: not correctness, security, or architecture."
 model: sonnet
 memory: user
 ---

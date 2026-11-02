@@ -37,8 +37,8 @@ if (-not (Test-Path -LiteralPath $helper)) { exit 0 }
 
 # Encodes a path the way Claude Code names its per-project directory under
 # ~/.claude/projects: every character that is not a letter or digit becomes a
-# dash. Underscores and dots go too -- `C:\SRC\_FireBot` is keyed as
-# `C--SRC--FireBot` -- so replacing only the separators would report a mismatch
+# dash. Underscores and dots go too -- `C:\SRC\_Example` is keyed as
+# `C--SRC--Example` -- so replacing only the separators would report a mismatch
 # on a path whose casing is perfectly fine.
 function ConvertTo-ProjectKeyName {
     param([string] $Path)

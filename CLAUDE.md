@@ -25,6 +25,11 @@ the headers and ask: "am I at this moment now?"
   one owner per capability, a skill with an agent is a trigger rather than a
   second copy, every rule written exactly once, and frontmatter that is trigger
   language only.
+- **The plugin stays general.** It knows nothing about the user's projects,
+  machines, or personal configuration, and it does not depend on them. Name no
+  project, and do not refer to the claude-jonas repo or its files. Azure DevOps
+  and GitHub are the only environments that it may know. A rule that needs a
+  personal file belongs in claude-jonas.
 - **Path portability:** never hard-code `C:\Users\<name>`. Use `$env:USERPROFILE`,
   `$PSScriptRoot`, or `~`. Everything must work for any user.
 - **Bump `version` in `plugins/d/.claude-plugin/plugin.json` in the same

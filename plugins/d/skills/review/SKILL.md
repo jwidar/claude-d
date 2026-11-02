@@ -151,10 +151,10 @@ _For systemic architectural concerns, see Architecture above. This section cover
 - Is it over-engineered or under-engineered?
 - Are the methods too long?
 - Does it avoid passing primitives as arguments? (true/false is often not very descriptive at the call site)
-- Check the changed code against the code design rules that load with a code
-  file: caller-first, naming, infrastructure code as an outline, and no static
-  dependencies. Find the callers of each changed method and interface, and flag
-  a name or contract that serves only the implementer.
+- Does it use static classes and methods unnecessarily?
+- **Caller-first**: find the callers of each changed method and interface. Flag a name or contract that serves only the implementer, and an abstraction that leaks implementation details into the caller.
+- **Names**: does each name cover its abstraction, so that the reader does not need to open the definition?
+- **Infrastructure code**: entry points, configuration, service registration, and wiring must read as an outline. Flag a long body that mixes registrations with building, execution, or validation.
 
 # 2e. Readability
 - Is the code self-documenting?
@@ -164,7 +164,7 @@ _For systemic architectural concerns, see Architecture above. This section cover
 # 2f. Code style
 
 - Standard `.editorconfig` formatting is applied automatically by a PostToolUse hook on Write/Edit (`dotnet format`), so do not raise findings for whitespace, indentation, or `using` ordering — assume they are already correct.
-- The personal C# conventions a formatter cannot enforce (comma-first argument wrapping, no primary constructors, fluent-chain breaking, Moq `Verify`/`Setup` wrapping, one-type-per-file, etc.) are in the C# rules that load with a `.cs` file, and apply while the code is being typed. For foreign work (step 1e), consult the `d:csharp-style-reviewer` agent on the changed `.cs` files and fold its findings in here. For own work, check the changed files against those conventions yourself and do not launch the agent.
+- The C# conventions a formatter cannot enforce (comma-first argument wrapping, no primary constructors, fluent-chain breaking, Moq `Verify`/`Setup` wrapping, one-type-per-file, etc.) are owned by the `d:csharp-style-reviewer` agent. For foreign work (step 1e), consult the `d:csharp-style-reviewer` agent on the changed `.cs` files and fold its findings in here. For own work, check the changed files against the C# conventions in your instructions yourself and do not launch the agent.
 - If the diff touches `.editorconfig`, consult `d:dotnet-format` and check it against the structurally-risky rule table — an unpinned risky rule is a finding, not just a future risk.
 - If the diff was produced or followed by a multi-file `dotnet format` pass, apply `d:dotnet-format`'s Rule 4 grep for known-bad shapes (e.g. collapsed single-line brace bodies) before approving.
 - Raise violations as findings scoped to the changed files. If a clean fix would touch many files outside the current work, note it but don't expand scope — ask the user first.
