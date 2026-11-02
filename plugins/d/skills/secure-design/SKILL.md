@@ -33,7 +33,7 @@ last change in the same area, and that is fine. None may be answered by accident
 - **Know our dependencies.** Every dependency adds risk and maintenance work.
   What do we rely on, and how are vulnerabilities and updates handled?
 
-The team decides how. Do not ask the user to choose between a secure and a less
+You decide how. Do not ask the user to choose between a secure and a less
 secure option; take the secure one and say why in one line.
 
 # When you review a change
@@ -49,7 +49,7 @@ code for these defects:
 - An endpoint or operation without an authentication or authorization check.
 - An error message or log line that shows internal details or sensitive data.
 
-# When a change needs expertise the team does not have
+# When a change needs expertise that you and the specialist agents do not have
 
 Say so, and recommend a specialist. Do this also when a change introduces a
 security risk that the design cannot remove.
