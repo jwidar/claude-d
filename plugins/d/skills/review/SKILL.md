@@ -16,10 +16,13 @@ If the user presents a workitem or pull request, use `AskUserQuestion` to ask wh
 
 # 1a. Determine target branch and fetch
 
-Determine the default branch of the remote:
+Determine the default branch of the remote. This works in Bash and in
+PowerShell:
 ```
-git remote show origin | grep 'HEAD branch' | sed 's/.*: //'
+git symbolic-ref --short refs/remotes/origin/HEAD
 ```
+It prints `origin/<default-branch>`. If it fails, run
+`git remote set-head origin --auto` once, then try again.
 
 Fetch to ensure remote tracking refs are current:
 ```
@@ -81,16 +84,13 @@ run the specialists on the foreign files only.
 
 # 1f. Check for matching pull request
 
-Detect the repository name from the git remote URL:
-```
-basename -s .git "$(git remote get-url origin 2>/dev/null)"
-```
-
-If a DevOps integration is available, use it to check whether an active PR exists whose source branch matches the current branch. If a matching PR is found:
+Skip this step when no DevOps or GitHub integration is available. Otherwise,
+take the repository name from `git remote get-url origin`, and use the
+integration to check whether an active PR exists whose source branch matches the current branch. If a matching PR is found:
 - Show the PR title, ID, and target branch
 - Note that PR commenting will be available as an option per finding during the review
 
-If no matching PR is found, or if no DevOps integration is available, proceed with local-only review silently. Do **not** ask for a blanket delivery choice here — each finding will be handled individually in step 3.
+If no matching PR is found, proceed with local-only review silently. Do **not** ask for a blanket delivery choice here — each finding will be handled individually in step 3.
 
 # 1g. Architectural assessment
 
@@ -132,8 +132,8 @@ Architectural findings include:
 Do not soften or hedge architectural findings. Present them as what they are: professional design evaluations backed by analysis of the codebase's existing architecture.
 
 # 2b. Correctness
-- Does the code do what it's supposed to our plan?
-  - Is there no plan? Ask more questions about details
+- Does the code do what the plan says?
+  - If there is no plan, ask about the details.
 - Are there edge cases not handled?
 - Are there potential runtime errors?
 - Are relevant tests maintained?
@@ -150,25 +150,21 @@ _For systemic architectural concerns, see Architecture above. This section cover
 - Are abstractions at the right level?
 - Is it over-engineered or under-engineered?
 - Are the methods too long?
-- Does it use static classes and methods unnecessarily?
 - Does it avoid passing primitives as arguments? (true/false is often not very descriptive at the call site)
-- **Caller-first**: does the code make sense from the call site without chasing implementations? Find callers of changed methods and interfaces — does the name and contract serve the caller's understanding? Flag abstractions that leak implementation details into the caller.
-- **Infrastructure code**: entry points, configuration, service registration, and wiring are feature roots — they must read as a clear outline. Flag methods that mix registrations with building, execution, or validation in one long body. These should be broken into named methods whose names clarify the segments.
+- Check the changed code against the code design rules that load with a code
+  file: caller-first, naming, infrastructure code as an outline, and no static
+  dependencies. Find the callers of each changed method and interface, and flag
+  a name or contract that serves only the implementer.
 
 # 2e. Readability
-- Are names descriptive and accurate?
-  - Is it clear from the call site what the code means?
-  - Does each name cover its abstraction completely — or does the reader need to open the definition to understand what they are looking at?
-  - Do names serve the caller's understanding, or only the implementer's?
 - Is the code self-documenting?
-- Can a feature root's code be understood without chasing the implementations behind it?
 - **Comments** — judge every added or changed comment against the `d:comments`
   skill, and raise what it disallows as a finding.
 
 # 2f. Code style
 
 - Standard `.editorconfig` formatting is applied automatically by a PostToolUse hook on Write/Edit (`dotnet format`), so do not raise findings for whitespace, indentation, or `using` ordering — assume they are already correct.
-- The personal C# conventions a formatter cannot enforce (comma-first argument wrapping, no primary constructors, fluent-chain breaking, Moq `Verify`/`Setup` wrapping, one-type-per-file, etc.) are written into `User_CLAUDE.md` and apply while the code is being typed. For foreign work (step 1e), consult the `d:csharp-style-reviewer` agent on the changed `.cs` files and fold its findings in here. For own work, check the changed files against those conventions yourself and do not launch the agent.
+- The personal C# conventions a formatter cannot enforce (comma-first argument wrapping, no primary constructors, fluent-chain breaking, Moq `Verify`/`Setup` wrapping, one-type-per-file, etc.) are in the C# rules that load with a `.cs` file, and apply while the code is being typed. For foreign work (step 1e), consult the `d:csharp-style-reviewer` agent on the changed `.cs` files and fold its findings in here. For own work, check the changed files against those conventions yourself and do not launch the agent.
 - If the diff touches `.editorconfig`, consult `d:dotnet-format` and check it against the structurally-risky rule table — an unpinned risky rule is a finding, not just a future risk.
 - If the diff was produced or followed by a multi-file `dotnet format` pass, apply `d:dotnet-format`'s Rule 4 grep for known-bad shapes (e.g. collapsed single-line brace bodies) before approving.
 - Raise violations as findings scoped to the changed files. If a clean fix would touch many files outside the current work, note it but don't expand scope — ask the user first.
@@ -224,7 +220,7 @@ After all findings have been walked through, produce a final summary grouped by 
 List each agreed issue with file:line reference, one per line.
 
 **Issues to post to PR:**
-List each issue marked for PR commenting. Then execute: for each, use the DevOps integration to post the finding as an inline PR comment on the relevant file and line. Use markdown formatting and mark each thread as active.
+List each issue marked for PR commenting. If an integration is available, post each finding as an inline PR comment on the relevant file and line, with markdown formatting, and mark each thread as active. If not, give each comment as text that the user can paste.
 
 **Dismissed issues:**
 List briefly, for the record.
@@ -248,8 +244,5 @@ The action summary in step 3c is the only record. Everything else is noise.
 
 - Be specific - reference exact file paths and line numbers
 - Be constructive - suggest fixes, don't just criticize
-- Prioritize - focus on issues that matter (architecture > correctness > security > design > style)
-- Take strong positions on architecture — the systems-architect agent provides informed design evaluations, not suggestions. Present architectural findings as professional assessments, not options to consider.
 - Be concise - the user steers from overview, dive into details only when asked
 - Don't nitpick style unless it affects readability significantly
-- Always present findings interactively, one at a time — never batch them into a single output block

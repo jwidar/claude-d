@@ -11,8 +11,8 @@ things that work the same for anyone who installs the plugin.
 
 - **Plugin `d`** (`plugins/d/`) — the portable capabilities. The name is a single
   letter so skills invoke as `/d:review` rather than something long to type:
-  - skills: `review`, `teach`, `status`, `git-state`, `scratchpad`,
-    `local-links`, `comments`, `tool-authoring`, `debug-setup`, `expert`, `caller-first`,
+  - skills: `review`, `teach`, `status`, `git-state`, `comments`,
+    `tool-authoring`, `debug-setup`, `expert`, `caller-first`,
     `iis-config`, `dotnet-format`, `plugin-feedback`, `show-backlog`,
     `worktree-slot`, `secure-design`
   - agents: `systems-architect`, `csharp-style-reviewer`, `avalonia-ui-specialist`
@@ -20,7 +20,8 @@ things that work the same for anyone who installs the plugin.
     (`dotnet format`) to the `.cs` files touched by a `Write`/`Edit`, a `Stop`
     hook that summarizes the formatting time spent, a `SessionStart` hook
     that warns when the launch path's casing does not match the filesystem's
-    own, a `SessionStart` hook that reports when the session runs in a git
+    own, a `SessionStart` hook that gives the rule for local file links, a
+    `SessionStart` hook that reports when the session runs in a git
     worktree slot, a `PreToolUse` hook that asks before a push or a new
     pull request, checks the PR description, and blocks a force push, a
     `PreToolUse` hook that checks a commit message, a `PreToolUse` hook that asks

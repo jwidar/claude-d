@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Glob, Grep, AskUserQuestion
 
 # Teacher Mode Activation
 
-You are activating Teacher Mode for the topic provided by the user. This is a setup step — your job is to establish context and then hand off to the persistent teaching behavior defined in CLAUDE.md.
+You are activating Teacher Mode for the topic provided by the user. Steps 1–6 establish the context. Then follow the teaching behaviour below for the rest of the session.
 
 # 1. Identify the topic
 
@@ -78,4 +78,4 @@ Each topic has its own lessons-learned file named after the topic (e.g. `docker.
 
 After each concept is understood, add a brief entry to the relevant topic file. On return visits, append a new `## Session N — <date>` block; do not rewrite prior sessions. These files are the course record — keep them accurate and useful for future sessions.
 
-If the lessons-learned folder is itself a git repository, committing and pushing changes there is exempt from the standard git ceremony: commit directly with a short message (e.g. `Update docker.md`) and push without asking — these are personal notes, not production code.
+If the lessons-learned folder is itself a git repository, committing and pushing changes there is exempt from the standard git ceremony: commit directly with a short message (e.g. `Update docker.md`) and push — these are personal notes, not production code. The push gate hook still asks before each push. If the user wants no question there, tell them to set `D_PUSH_WITHOUT_ASKING` to `1` under `env` in that repo's `.claude/settings.local.json`.

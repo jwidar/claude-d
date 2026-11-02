@@ -9,7 +9,7 @@ $cases = @(
 $failures = 0
 foreach ($case in $cases) {
     $actual = Get-LocalLinkForm -TermProgram $case.TermProgram
-    if ($actual.Contains("use $($case.Expected)")) {
+    if ($actual.Contains("link to $($case.Expected)") -and $actual.Contains('Link every mention')) {
         Write-Output "PASS  TERM_PROGRAM='$($case.TermProgram)' -> $($case.Expected)"
     }
     else {

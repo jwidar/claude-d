@@ -1,7 +1,13 @@
 # A resumed session keeps the line from its first start, even in another terminal.
 
-$VsCodeLinkForm = 'Local file links: use vscode://file/<absolute path>[:line] (VS Code integrated terminal).'
-$FileLinkForm = 'Local file links: use file:///<absolute path> (not a VS Code terminal).'
+$SharedRule = 'The label is the file name. The target holds the full absolute path from the drive letter, with / for every \. ' +
+    'Never a relative path, a placeholder, or ~. Link every mention of a local file, also a later mention of a scratchpad file.'
+
+$VsCodeLinkForm = 'Local file links (VS Code terminal): write a markdown link to vscode://file/<absolute path>. ' +
+    'For a line, add :<line> to the URL and to the label, for example ' +
+    '[notes.md:12](vscode://file/C:/Users/ALEX~1.DOE/AppData/Local/Temp/notes.md:12). ' + $SharedRule
+$FileLinkForm = 'Local file links (not a VS Code terminal): write a markdown link to file:///<absolute path>, for example ' +
+    '[notes.md](file:///C:/Users/ALEX~1.DOE/AppData/Local/Temp/notes.md). A file:/// URL cannot point at a line; put the line in the text. ' + $SharedRule
 
 function Main {
     [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false

@@ -1,6 +1,6 @@
 ---
 name: comments
-description: Use before writing ANY code, not just when a comment is already in mind — check this before every code-writing or code-editing turn, including doc comments, TODOs, and commented-out code. Also use when reviewing a diff that adds or changes comments. Default is no comments; this skill is the last-resort check for the rare case one is warranted.
+description: Use before you write or keep a code comment, a doc comment, a TODO, or commented-out code, when the added-comments hook flags a comment, and when you review a diff that adds or changes comments.
 ---
 
 # Comments in Code
@@ -13,16 +13,10 @@ second thing to read that says nothing new.
 
 Default position: **write no comment.** Make the code say it instead.
 
-The presence of a comment essentially means there is something wrong with the
-code. They read as "either the code is wrong or the reason it exists is wrong
-or the code is something the developer tried to avoid or wants to avoid."
-Comments call for attention before the code, because they explain how fucked
-up the situation is. In this regard, reading a comment that does NOT reveal how
-bad everything is proves to be an utter waste of time and energy and is extremely
-frustrating, especially when littered all over the place.
-
-We have a policy to not write comments and to add one is truly called for only
-as a last resort when the code alone does not make sense.
+A comment signals that something is wrong: the code does not say what it means,
+the reason for it is not obvious, or it is a workaround. A comment that does not
+show such a problem wastes the reader's attention. Write one only as a last
+resort, when the code alone does not make sense.
 
 # Before writing a comment: never write these
 
@@ -153,7 +147,7 @@ an external constraint (rule 3 above).
 # When writing a TODO
 
 Only with an owner and a tracked item, or they become permanent litter:
-`// TODO(jonas, #4821): remove once the legacy feed is off.` A bare `// TODO`
+`// TODO(alex, #1234): remove once the legacy feed is off.` A bare `// TODO`
 gets deleted.
 
 # When editing existing code

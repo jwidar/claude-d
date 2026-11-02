@@ -117,6 +117,9 @@ context the whole time.
 - **One heading level: `#`.** No `##` or deeper anywhere in these files. A
   section that holds facts, not rules — a layout listing, what the repo is — may
   keep a topic header; a section that holds a rule may not.
+- **A numbered step of a procedure is the exception** (`# 3. Check for prior
+  lessons`). The procedure runs in order, so the number is the moment. A rule
+  that also applies outside the procedure goes under its own moment header.
 - **A rule that applies at several moments is written under each of them.** Do
   not deduplicate across sections. Do not cross-reference ("see above") in place
   of the rule; the reader at that moment has not read "above". When a moment is
