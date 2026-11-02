@@ -1,6 +1,7 @@
 $CommitPattern = '(^|[\s;&|(])git(\s+(-C\s+(?<repo>"[^"]+"|\S+)|-c\s+\S+|--[\w-]+(=\S+)?))*\s+commit\b'
 $EolEntryPattern = '^i/(?<index>\S*)\s+w/(?<working>\S*)\s+attr/(?<attributes>.*?)\s*\t(?<path>.+)$'
 $AllBytes = [Text.Encoding]::GetEncoding(28591)
+$PathsPerGitCall = 100
 
 function Main {
     [Console]::InputEncoding = New-Object Text.UTF8Encoding $false
@@ -41,10 +42,9 @@ function Repair-ChangedFiles {
 
     $autoCrlf = git -C $root config core.autocrlf
     $coreEol = git -C $root config core.eol
-    $changed = Get-ChangedPaths -Root $root
-    foreach ($entry in Split-GitPaths -Output (git -C $root ls-files --eol -z --cached --others --exclude-standard 2>$null)) {
+    foreach ($entry in Get-ChangedFileEntries -Root $root) {
         $match = [regex]::Match($entry, $EolEntryPattern)
-        if (-not $match.Success -or -not $changed.Contains($match.Groups['path'].Value)) {
+        if (-not $match.Success) {
             continue
         }
         $wanted = Get-WantedEnding -Index $match.Groups['index'].Value -Working $match.Groups['working'].Value `
@@ -55,19 +55,25 @@ function Repair-ChangedFiles {
     }
 }
 
+function Get-ChangedFileEntries {
+    param([string] $Root)
+
+    $paths = @(Get-ChangedPaths -Root $Root)
+    for ($start = 0; $start -lt $paths.Count; $start += $PathsPerGitCall) {
+        $batch = $paths[$start..([Math]::Min($start + $PathsPerGitCall, $paths.Count) - 1)]
+        Split-GitPaths -Output (git --literal-pathspecs -C $Root ls-files --eol -z --cached --others --exclude-standard -- @batch 2>$null)
+    }
+}
+
 function Get-ChangedPaths {
     param([string] $Root)
 
-    $paths = New-Object 'Collections.Generic.HashSet[string]'
     $output = @(
         git -C $Root diff --name-only -z HEAD 2>$null
         git -C $Root diff --name-only -z --cached 2>$null
         git -C $Root ls-files -z --others --exclude-standard 2>$null
     )
-    foreach ($path in Split-GitPaths -Output $output) {
-        [void] $paths.Add($path)
-    }
-    return , $paths
+    return @(Split-GitPaths -Output $output | Sort-Object -Unique)
 }
 
 function Split-GitPaths {

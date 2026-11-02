@@ -34,8 +34,12 @@ git -C $repo add staged.md 2>$null
 Set-Bytes -Name 'tracked.raw' -Text "one`ntwo`r`nthree`n"
 Set-Bytes -Name 'utf8.md' -Text "$([char] 0xC3)$([char] 0xA5)`n"
 Set-Bytes -Name 'untouched.md' -Text "one`r`ntwo`r`n"
+Set-Bytes -Name 'with space.md' -Text "one`n"
+Set-Bytes -Name 'bracket[1].md' -Text "one`n"
 
 $cases = @(
+    @{ Name = 'path with a space'; File = 'with space.md'; Expected = "one`r`n" }
+    @{ Name = 'path with pathspec characters'; File = 'bracket[1].md'; Expected = "one`r`n" }
     @{ Name = 'mixed tracked file becomes CRLF'; File = 'tracked.md'; Expected = "one`r`ntwo`r`nthree`r`n" }
     @{ Name = 'new file with eol=crlf becomes CRLF'; File = 'new.ps1'; Expected = "one`r`ntwo`r`n" }
     @{ Name = 'new file with eol=lf becomes LF'; File = 'new.sh'; Expected = "one`ntwo`n" }
