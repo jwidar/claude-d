@@ -9,7 +9,7 @@ One repo has one main clone and a set of worktree slots next to it. A slot
 folder is named `<repo>.<number>`:
 
 ```
-C:\src\Example\      main clone, stays on master, no edits here
+C:\src\Example\      main clone, stays on the default branch, no edits here
 C:\src\Example.1\    slot 1, one Claude session
 C:\src\Example.2\    slot 2, another Claude session
 ```
@@ -17,7 +17,7 @@ C:\src\Example.2\    slot 2, another Claude session
 All slots share one object store, so branches, tags, and the stash list are
 shared. Each slot path stays the same for a long time, so the Claude project
 memory and IDE settings stay with the slot. An idle slot is parked on a detached
-`origin/master`. A slot is not removed after a task. It is used again.
+`origin/HEAD`. A slot is not removed after a task. It is used again.
 
 # When the user says "new worktree"
 
@@ -50,19 +50,19 @@ Run `git -C <slot> status -sb`.
 
 # When the session runs in the main clone
 
-The main clone stays on `master` and has no edits. Tell the user once that work
+The main clone stays on the default branch and has no edits. Tell the user once that work
 belongs in a slot. If the user wants to work here, continue.
 
 # Before the first edit in a parked slot
 
-Make a work branch from a fresh `origin/master`:
+Make a work branch from a fresh `origin/HEAD`, the default branch of the remote:
 
 ```
 git -C <slot> fetch origin
-git -C <slot> switch --no-track -c <branch> origin/master
+git -C <slot> switch --no-track -c <branch> origin/HEAD
 ```
 
-`--no-track` keeps `origin/master` from becoming the upstream. The first
+`--no-track` keeps the default branch from becoming the upstream. The first
 `git push -u origin <branch>` sets the correct one. Use the branch name that the user gives, or the repo's own convention. If
 neither exists, ask.
 
@@ -73,8 +73,8 @@ neither exists, ask.
 
 # Before you switch a branch
 
-- Never check out `master` in a slot. The main clone holds it. Use
-  `git switch --detach origin/master`.
+- Never check out the default branch in a slot. The main clone holds it. Use
+  `git switch --detach origin/HEAD`.
 - Never check out a branch that another worktree holds. Git refuses with
   "already used by worktree at". Do not force it with
   `--ignore-other-worktrees`. Tell the user which slot holds the branch.

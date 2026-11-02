@@ -29,7 +29,6 @@
 
 $rawStdin = [Console]::In.ReadToEnd()
 
-# Get-TrueCasePath is shared with the profile wrappers setup.ps1 installs.
 # Missing helper means no check, never a failed session.
 $helper = Join-Path $PSScriptRoot 'Get-TrueCasePath.ps1'
 if (-not (Test-Path -LiteralPath $helper)) { exit 0 }
@@ -92,13 +91,11 @@ own trust flag, transcript directory and memory folder, separate from sessions
 launched with the filesystem's casing. Memory written here will not be visible
 from the correctly-cased path, which is "$trueCase".
 
-The ``claude`` and ``code`` wrapper functions installed by this repo's setup.ps1
-normally prevent this. Common reasons one still slips through:
+Common reasons:
 
   - the session was RESUMED, so it kept the path the original session used
   - the editor was opened from its recent-folders list or the Start menu,
     rather than by typing ``code <folder>`` in a shell
-  - the shell predates setup.ps1 and has not reloaded its profile
 
 Reopening the folder with ``code <folder>`` from a PowerShell terminal, then
 starting a NEW session rather than resuming, lands on "$trueCase".

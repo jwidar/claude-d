@@ -13,7 +13,7 @@ things that work the same for anyone who installs the plugin.
   letter so skills invoke as `/d:review` rather than something long to type:
   - skills: `review`, `teach`, `status`, `git-state`, `comments`,
     `tool-authoring`, `debug-setup`, `expert`, `caller-first`,
-    `iis-config`, `dotnet-format`, `plugin-feedback`, `show-backlog`,
+    `dotnet-format`, `plugin-feedback`, `show-backlog`,
     `worktree-slot`, `secure-design`
   - agents: `systems-architect`, `csharp-style-reviewer`
   - hooks: a `PostToolUse` hook that applies `.editorconfig` formatting
@@ -35,6 +35,6 @@ things that work the same for anyone who installs the plugin.
 
 This repo has no install script of its own — it expects to be registered as
 a local plugin marketplace by whatever settings.json points at it (directly,
-or via a sibling repo's setup script), with `d@jwidar` then enabled in
+or via a setup script), with `d@jwidar` then enabled in
 `enabledPlugins`. Point a marketplace registration's `path` at a local clone
 of this repo, or add it as a marketplace source by its GitHub URL.

@@ -1,14 +1,8 @@
 # This repository
 
-A personal **Claude Code plugin marketplace**. It carries the portable,
-shareable half of one developer's Claude Code configuration — the plugin and
-the marketplace manifest — and nothing machine- or user-specific. It is a
-normal git repo — it is **not** the live `~/.claude` directory.
-
-The personal half (always-on user instructions, portable settings, setup
-script, session-start hooks, learning logs) lives in a sibling repo,
-**claude-jonas**, which installs this repo as a plugin marketplace. See that
-repo's own `CLAUDE.md` for how the two fit together.
+A **Claude Code plugin marketplace**: the plugin and the marketplace manifest,
+and nothing machine- or user-specific. It is a normal git repo — it is **not**
+the live `~/.claude` directory.
 
 # How this file is organized
 
@@ -27,9 +21,9 @@ the headers and ask: "am I at this moment now?"
   language only.
 - **The plugin stays general.** It knows nothing about the user's projects,
   machines, or personal configuration, and it does not depend on them. Name no
-  project, and do not refer to the claude-jonas repo or its files. Azure DevOps
-  and GitHub are the only environments that it may know. A rule that needs a
-  personal file belongs in claude-jonas.
+  project and no personal repo or file. Azure DevOps and GitHub are the only
+  environments that it may know. A rule that needs a personal file does not
+  belong in this repo.
 - **Path portability:** never hard-code `C:\Users\<name>`. Use `$env:USERPROFILE`,
   `$PSScriptRoot`, or `~`. Everything must work for any user.
 - **Bump `version` in `plugins/d/.claude-plugin/plugin.json` in the same
@@ -64,9 +58,6 @@ instructions live. Update the name in all of:
 - `plugins/d/.claude-plugin/plugin.json` — `description`, and bump `version`
 - `.claude-plugin/marketplace.json` — `description`
 - `readme.md` — the skills / agents lists
-- the **claude-jonas** repo's `User_CLAUDE.md`, `output-styles/` and `rules/` —
-  any skill or agent referenced by name (e.g. the mandatory `d:review`
-  invocation rule hard-codes `Skill(skill="…")`)
 - rename the skill directory with `git mv` so history is preserved
 
 Leave generic prose untouched (e.g. "code-review mindset" is English, not a
@@ -77,13 +68,8 @@ When the **plugin itself** is renamed, also update:
 - `plugins/<name>/` — rename the directory with `git mv`
 - `plugins/<name>/.claude-plugin/plugin.json` — `name`
 - `.claude-plugin/marketplace.json` — `name` and `source`
-- the **claude-jonas** repo's `User_settings.json` — the `enabledPlugins` key
-  (`<name>@jwidar`)
-- the **claude-jonas** repo's `setup.ps1` — the `<name>@jwidar` / `'<name>'`
-  strings in comments and output
-- the live `~/.claude/settings.json` — `setup.ps1` adds the new
-  `enabledPlugins` key but does **not** remove the old one; delete it by hand
-  or the stale plugin stays enabled
+- the live `~/.claude/settings.json` — the `enabledPlugins` key
+  (`<name>@jwidar`); delete the old key or the stale plugin stays enabled
 
 # Before writing an example into any file in this repo
 

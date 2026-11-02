@@ -1,7 +1,7 @@
 {
   "name": "d",
-  "displayName": "Jonas Dev Setup",
-  "description": "review / teach / status / git-state / comments / tool-authoring / debug-setup / expert / caller-first / iis-config / dotnet-format / plugin-feedback / show-backlog / worktree-slot / secure-design skills, architecture and C# style review agents, a PostToolUse hook that applies .editorconfig formatting after Write/Edit on .cs files, a SessionStart hook warning on non-canonical launch-path casing, and a SessionStart hook reporting a git worktree slot, and a SessionStart hook that gives the local file link rule. Short name so skills invoke as /d:review.",
+  "displayName": "Dev Setup",
+  "description": "review / teach / status / git-state / comments / tool-authoring / debug-setup / expert / caller-first / dotnet-format / plugin-feedback / show-backlog / worktree-slot / secure-design skills, architecture and C# style review agents, a PostToolUse hook that applies .editorconfig formatting after Write/Edit on .cs files, a SessionStart hook warning on non-canonical launch-path casing, and a SessionStart hook reporting a git worktree slot, and a SessionStart hook that gives the local file link rule. Short name so skills invoke as /d:review.",
   "version": "0.45.0",
   "author": {
     "name": "Jonas Widarsson",
