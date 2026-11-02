@@ -31,7 +31,8 @@ Walk this list from the top. Take the first carrier that fits.
 - **Path-scoped rule** (a real file in `~/.claude/rules/`, with `paths:`
   frontmatter such as `"**/*.cs"`; a linked rules folder does not load them).
   The rule applies to one kind of file. It loads when Claude reads, writes, or
-  edits a matching file. A plugin cannot ship a rule file.
+  edits a matching file inside the working directory; in a test, a rule did not
+  load for a file outside it. A plugin cannot ship a rule file.
 - **Output style** (`~/.claude/output-styles/`). The rule shapes every message:
   tone, length, format, how to present a choice. It sits in the system prompt.
   A style file edit needs a restart.
