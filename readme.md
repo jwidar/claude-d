@@ -26,8 +26,7 @@ things that work the same for anyone who installs the plugin.
     pull request, checks the PR description, and blocks a force push, a
     `PreToolUse` hook that checks a commit message, a `PreToolUse` hook that
     repairs line endings in the changed files before a commit, a `PreToolUse` hook that asks
-    before an MCP tool posts a comment or a pull request, a `PreToolUse`
-    hook that asks before Claude starts a service or program, a hook that
+    before an MCP tool posts a comment or a pull request, a hook that
     keeps the Azure DevOps PAT out of `monitor-devops.local.md`, and a
     `PostToolUse` hook that copies a new `feedback` memory into the feedback
     backlog
