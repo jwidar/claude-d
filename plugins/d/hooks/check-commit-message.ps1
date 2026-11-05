@@ -1,3 +1,5 @@
+Import-Module (Join-Path $PSScriptRoot 'AnswerableAsk.psm1') -Force
+
 $CommitPattern = '(^|[\s;&|(])git(\s+(-C\s+(?<repo>"[^"]+"|\S+)|-c\s+\S+|--[\w-]+(=\S+)?))*\s+commit\b(?<args>[\s\S]*)'
 $HeredocPattern = '<<-?\s*[''"]?(?<tag>\w+)[''"]?\r?\n(?<body>[\s\S]*?)\r?\n\s*\k<tag>\b'
 $HereStringPattern = '@(?<quote>[''"])\r?\n(?<body>[\s\S]*?)\r?\n\k<quote>@'
@@ -15,16 +17,19 @@ $CommandFormRule = 'A commit subject reads as a command to the repo: what happen
     'Describe the essence, not the details that the diff shows. Write it in ASD-STE100.'
 
 function Main {
-    $hookInput = Read-HookInput
+    param([string] $RawInput)
+
+    $hookInput = $RawInput | ConvertFrom-Json
     $decision = Get-CommitDecision -Command ([string] $hookInput.tool_input.command) -WorkingDirectory $hookInput.cwd
     if ($decision) {
-        Write-Decision @decision
+        $answerable = Resolve-AnswerableDecision -Decision $decision -RawInput $RawInput
+        Write-Decision @answerable
     }
 }
 
-function Read-HookInput {
+function Read-RawInput {
     [Console]::InputEncoding = New-Object Text.UTF8Encoding $false
-    return [Console]::In.ReadToEnd() | ConvertFrom-Json
+    return [Console]::In.ReadToEnd()
 }
 
 function Get-CommitDecision {
@@ -114,7 +119,7 @@ function Write-Decision {
 if ($MyInvocation.InvocationName -ne '.') {
     try {
         $ErrorActionPreference = 'Stop'
-        Main
+        Main -RawInput (Read-RawInput)
     }
     catch {
         # A failure here must never block the commit.

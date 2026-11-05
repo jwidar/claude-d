@@ -1,18 +1,23 @@
+Import-Module (Join-Path $PSScriptRoot 'AnswerableAsk.psm1') -Force
+
 $ReadVerbPattern = '^(get|list|search|read|fetch|query|find)'
 $TextFieldNames = @('body', 'comment', 'content', 'text', 'message', 'description', 'title')
 $MaxTextLength = 300
 
 function Main {
-    $hookInput = Read-HookInput
-    $decision = Get-GateDecision -ToolName $hookInput.tool_name -ToolInput $hookInput.tool_input
-    if ($decision) {
-        Write-Ask -Reason $decision
+    param([string] $RawInput)
+
+    $hookInput = $RawInput | ConvertFrom-Json
+    $postSummary = Get-GateDecision -ToolName $hookInput.tool_name -ToolInput $hookInput.tool_input
+    if ($postSummary) {
+        $answerable = Resolve-AnswerableDecision -Decision @{ Decision = 'ask'; Reason = $postSummary } -RawInput $RawInput
+        Write-Decision @answerable
     }
 }
 
-function Read-HookInput {
+function Read-RawInput {
     [Console]::InputEncoding = New-Object Text.UTF8Encoding $false
-    return [Console]::In.ReadToEnd() | ConvertFrom-Json
+    return [Console]::In.ReadToEnd()
 }
 
 function Get-GateDecision {
@@ -64,13 +69,13 @@ function Limit-Text {
     return $singleLine.Substring(0, $MaxTextLength) + '...'
 }
 
-function Write-Ask {
-    param([string] $Reason)
+function Write-Decision {
+    param([string] $Decision, [string] $Reason)
 
     $output = @{
         hookSpecificOutput = @{
             hookEventName = 'PreToolUse'
-            permissionDecision = 'ask'
+            permissionDecision = $Decision
             permissionDecisionReason = $Reason
         }
     }
@@ -79,13 +84,17 @@ function Write-Ask {
 }
 
 if ($MyInvocation.InvocationName -ne '.') {
+    $rawInput = ''
     try {
         $ErrorActionPreference = 'Stop'
-        Main
+        $rawInput = Read-RawInput
+        Main -RawInput $rawInput
     }
     catch {
         # A tool that matched the hook may post. Ask rather than let it through.
-        Write-Ask -Reason 'This tool may post to an external system. Check it before you approve.'
+        $failure = @{ Decision = 'ask'; Reason = 'This tool may post to an external system. Check it before you approve.' }
+        $answerable = Resolve-AnswerableDecision -Decision $failure -RawInput $rawInput
+        Write-Decision @answerable
     }
     exit 0
 }

@@ -1,3 +1,5 @@
+Import-Module (Join-Path $PSScriptRoot 'AnswerableAsk.psm1') -Force
+
 $PushPattern = '(^|[\s;&|(/\\])git(\.exe)?["'']?(\s+(-C\s+(?<repo>"[^"]+"|\S+)|-c\s+("[^"]*"|\S+)|--(git-dir|work-tree|namespace|exec-path|config-env)\s+("[^"]*"|\S+)|--[\w-]+(=\S+)?))*\s+push\b(?<args>("[^"]*"|''[^'']*''|[^;&|\r\n"''])*)'
 $PullRequestPattern = '(^|[\s;&|(])(gh\s+pr\s+create|az\s+repos\s+pr\s+create)\b(?<args>("[^"]*"|''[^'']*''|[^;&|\r\n"''])*)'
 $QuotedTextPattern = '"[^"]*"|''[^'']*'''
@@ -33,7 +35,8 @@ function Main {
     $hookInput = $RawInput | ConvertFrom-Json
     $decision = Get-GateDecision -Command ([string] $hookInput.tool_input.command) -WorkingDirectory $hookInput.cwd
     if ($decision) {
-        Write-Decision @decision
+        $answerable = Resolve-AnswerableDecision -Decision $decision -RawInput $RawInput
+        Write-Decision @answerable
     }
 }
 
@@ -274,7 +277,9 @@ if ($MyInvocation.InvocationName -ne '.') {
     }
     catch {
         if ($rawInput -match '\bpush\b|\bpr\s+create\b') {
-            Write-Decision -Decision 'ask' -Reason "The push check failed ($($_.Exception.Message)). Read the command before you approve it."
+            $failure = @{ Decision = 'ask'; Reason = "The push check failed ($($_.Exception.Message)). Read the command before you approve it." }
+            $answerable = Resolve-AnswerableDecision -Decision $failure -RawInput $rawInput
+            Write-Decision @answerable
         }
     }
     exit 0

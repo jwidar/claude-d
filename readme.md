@@ -29,7 +29,8 @@ things that work the same for anyone who installs the plugin.
     before an MCP tool posts a comment or a pull request, a hook that
     keeps the Azure DevOps PAT out of `monitor-devops.local.md`, and a
     `PostToolUse` hook that copies a new `feedback` memory into the feedback
-    backlog
+    backlog. In a subagent, where nobody can answer a prompt, a hook that
+    asks denies instead and tells the agent to give the step back
 
 ## Install on a machine
 
