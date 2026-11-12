@@ -78,4 +78,4 @@ Each topic has its own lessons-learned file named after the topic (e.g. `docker.
 
 After each concept is understood, add a brief entry to the relevant topic file. On return visits, append a new `## Session N — <date>` block; do not rewrite prior sessions. These files are the course record — keep them accurate and useful for future sessions.
 
-If the lessons-learned folder is itself a git repository, committing and pushing changes there is exempt from the standard git ceremony: commit directly with a short message (e.g. `Update docker.md`) and push — these are personal notes, not production code. The push gate hook still asks before each push. If the user wants no question there, tell them to set `D_PUSH_WITHOUT_ASKING` to `1` under `env` in that repo's `.claude/settings.local.json`.
+If the lessons-learned folder is itself a git repository, committing and pushing changes there is exempt from the standard git ceremony: commit directly with a short message (e.g. `Update docker.md`) and push — these are personal notes, not production code.

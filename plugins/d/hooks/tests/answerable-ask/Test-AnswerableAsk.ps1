@@ -11,8 +11,7 @@ $nestedAgentIdInput = '{"session_id":"s","tool_input":{"agent_id":"a1","content"
 $brokenSubagentInput = '{"agent_id":"a1","tool_input":{"command":"git push'
 $brokenMainInput = '{"tool_input":{"command":"git push'
 
-$pullRequestBody = "Some text.`n`n## Checked by Claude`n- One case: works.`n`n/claude code"
-$pullRequestCommand = "gh pr create --title `"Add export retry`" --body `"$pullRequestBody`""
+$deletePushCommand = 'git push --delete origin feat'
 $commitWithList = "git commit -m `"Add export retry`n`n- one`n- two`""
 
 function New-HookInput {
@@ -51,10 +50,10 @@ $cases = @(
     @{ Name = 'unparsed subagent input becomes deny'; Actual = { Resolve-AnswerableDecision -Decision $ask -RawInput $brokenSubagentInput }; Decision = 'deny'; Reason = 'Push x.'; HandBack = $true }
     @{ Name = 'unparsed main input stays ask'; Actual = { Resolve-AnswerableDecision -Decision $ask -RawInput $brokenMainInput }; Decision = 'ask'; Reason = 'Push x.' }
 
-    @{ Name = 'push gate, main session'; Actual = { Invoke-Hook 'gate-git-push.ps1' (New-HookInput @{ command = $pullRequestCommand }) }; Decision = 'ask'; Reason = 'Open a pull request' }
-    @{ Name = 'push gate, subagent'; Actual = { Invoke-Hook 'gate-git-push.ps1' (New-HookInput @{ command = $pullRequestCommand } -Subagent) }; Decision = 'deny'; Reason = 'Open a pull request'; HandBack = $true }
-    @{ Name = 'push gate failure, main session'; Actual = { Invoke-Hook 'gate-git-push.ps1' $brokenMainInput }; Decision = 'ask'; Reason = 'The push check failed' }
-    @{ Name = 'push gate failure, subagent'; Actual = { Invoke-Hook 'gate-git-push.ps1' $brokenSubagentInput }; Decision = 'deny'; Reason = 'The push check failed'; HandBack = $true }
+    @{ Name = 'push gate, main session'; Actual = { Invoke-Hook 'gate-destructive-git-push.ps1' (New-HookInput @{ command = $deletePushCommand }) }; Decision = 'ask'; Reason = 'Delete refs on the remote' }
+    @{ Name = 'push gate, subagent'; Actual = { Invoke-Hook 'gate-destructive-git-push.ps1' (New-HookInput @{ command = $deletePushCommand } -Subagent) }; Decision = 'deny'; Reason = 'Delete refs on the remote'; HandBack = $true }
+    @{ Name = 'push gate failure, main session'; Actual = { Invoke-Hook 'gate-destructive-git-push.ps1' $brokenMainInput }; Decision = 'ask'; Reason = 'The push check failed' }
+    @{ Name = 'push gate failure, subagent'; Actual = { Invoke-Hook 'gate-destructive-git-push.ps1' $brokenSubagentInput }; Decision = 'deny'; Reason = 'The push check failed'; HandBack = $true }
 
     @{ Name = 'commit check, main session'; Actual = { Invoke-Hook 'check-commit-message.ps1' (New-HookInput @{ command = $commitWithList }) }; Decision = 'ask'; Reason = "Commit 'Add export retry'" }
     @{ Name = 'commit check, subagent'; Actual = { Invoke-Hook 'check-commit-message.ps1' (New-HookInput @{ command = $commitWithList } -Subagent) }; Decision = 'deny'; Reason = "Commit 'Add export retry'"; HandBack = $true }

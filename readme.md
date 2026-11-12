@@ -22,11 +22,12 @@ things that work the same for anyone who installs the plugin.
     that warns when the launch path's casing does not match the filesystem's
     own, a `SessionStart` hook that gives the rule for local file links, a
     `SessionStart` hook that reports when the session runs in a git
-    worktree slot, a `PreToolUse` hook that asks before a push or a new
-    pull request, checks the PR description, and blocks a force push, a
-    `PreToolUse` hook that checks a commit message, a `PreToolUse` hook that
+    worktree slot, a `PreToolUse` hook that asks before a force push or
+    a push that deletes refs on the remote, a `PreToolUse` hook that
+    checks the title and description when a pull request is created or
+    updated, a `PreToolUse` hook that checks a commit message, a `PreToolUse` hook that
     repairs line endings in the changed files before a commit, a `PreToolUse` hook that asks
-    before an MCP tool posts a comment or a pull request, a hook that
+    before an MCP tool posts a comment or another record (not a pull request create or update), a hook that
     keeps the Azure DevOps PAT out of `monitor-devops.local.md`, and a
     `PostToolUse` hook that copies a new `feedback` memory into the feedback
     backlog. In a subagent, where nobody can answer a prompt, a hook that

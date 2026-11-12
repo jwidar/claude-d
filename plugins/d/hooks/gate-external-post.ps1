@@ -1,6 +1,7 @@
 Import-Module (Join-Path $PSScriptRoot 'AnswerableAsk.psm1') -Force
 
 $ReadVerbPattern = '^(get|list|search|read|fetch|query|find)'
+$PullRequestCreateOrUpdatePattern = '^(create|update)_pull_request$'
 $TextFieldNames = @('body', 'comment', 'content', 'text', 'message', 'description', 'title')
 $MaxTextLength = 300
 
@@ -32,7 +33,7 @@ function Get-GateDecision {
     }
     $server = $parts[1]
     $tool = $parts[2..($parts.Count - 1)] -join '__'
-    if ($tool -match $ReadVerbPattern) {
+    if ($tool -match $ReadVerbPattern -or $tool -match $PullRequestCreateOrUpdatePattern) {
         return $null
     }
 

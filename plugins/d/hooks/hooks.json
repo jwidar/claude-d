@@ -54,33 +54,45 @@
             "type": "command",
             "if": "Bash(*git*push*)",
             "command": "powershell",
-            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-git-push.ps1"],
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-destructive-git-push.ps1"],
             "timeout": 10,
-            "statusMessage": "Checking the push"
+            "statusMessage": "Checking the push for force or delete"
           },
           {
             "type": "command",
             "if": "PowerShell(*git*push*)",
             "command": "powershell",
-            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-git-push.ps1"],
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-destructive-git-push.ps1"],
             "timeout": 10,
-            "statusMessage": "Checking the push"
+            "statusMessage": "Checking the push for force or delete"
           },
           {
             "type": "command",
-            "if": "Bash(* pr create*)",
+            "if": "Bash(* pr *)",
             "command": "powershell",
-            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-git-push.ps1"],
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/check-pull-request-text.ps1"],
             "timeout": 10,
-            "statusMessage": "Checking the pull request"
+            "statusMessage": "Checking the pull request text"
           },
           {
             "type": "command",
-            "if": "PowerShell(* pr create*)",
+            "if": "PowerShell(* pr *)",
             "command": "powershell",
-            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/gate-git-push.ps1"],
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/check-pull-request-text.ps1"],
             "timeout": 10,
-            "statusMessage": "Checking the pull request"
+            "statusMessage": "Checking the pull request text"
+          }
+        ]
+      },
+      {
+        "matcher": "^mcp__.+__(create|update)_pull_request$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/check-pull-request-text.ps1"],
+            "timeout": 10,
+            "statusMessage": "Checking the pull request text"
           }
         ]
       },
