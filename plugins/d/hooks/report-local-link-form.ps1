@@ -1,13 +1,14 @@
 # A resumed session keeps the line from its first start, even in another terminal.
 
 $SharedRule = 'The label is the file name. The target holds the full absolute path from the drive letter, with / for every \. ' +
-    'Never a relative path, a placeholder, or ~. Link every mention of a local file, also a later mention of a scratchpad file.'
+    'Never a relative path, a placeholder, or ~. Link every mention of a local file, also a later mention of a scratchpad file. ' +
+    'A path from the environment can hold a short 8.3 folder name (such as ALEX~1.DOE). Write the full folder name, because the short form does not open.'
 
 $VsCodeLinkForm = 'Local file links (VS Code terminal): write a markdown link to vscode://file/<absolute path>. ' +
     'For a line, add :<line> to the URL and to the label, for example ' +
-    '[notes.md:12](vscode://file/C:/Users/ALEX~1.DOE/AppData/Local/Temp/notes.md:12). ' + $SharedRule
+    '[notes.md:12](vscode://file/C:/Users/alex.doe/AppData/Local/Temp/notes.md:12). ' + $SharedRule
 $FileLinkForm = 'Local file links (not a VS Code terminal): write a markdown link to file:///<absolute path>, for example ' +
-    '[notes.md](file:///C:/Users/ALEX~1.DOE/AppData/Local/Temp/notes.md). A file:/// URL cannot point at a line; put the line in the text. ' + $SharedRule
+    '[notes.md](file:///C:/Users/alex.doe/AppData/Local/Temp/notes.md). A file:/// URL cannot point at a line; put the line in the text. ' + $SharedRule
 
 function Main {
     [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
