@@ -131,7 +131,19 @@ context the whole time.
   fired. Do not add emphasis, bold, or a caveat — those do not change which
   header the model is reading under.
 
-# 6. When you write hook text
+# 6. When you write the words of an instruction
+
+Instruction text costs tokens in every session that loads it. Use the fewest
+tokens that leave no ambiguity.
+
+- Fragments, colons, and dropped filler are fine. One statement per rule.
+- Give a reason only when the rule looks wrong or arbitrary without it.
+- No undefined shorthand: a term the reader must guess is ambiguity.
+- This covers text Claude reads: every `CLAUDE.md`, rule files, the output
+  style, skill and agent bodies, hook text. Text for people (messages, commits,
+  PRs, docs) keeps its own style rules.
+
+# 7. When you write hook text
 
 - Return it as `hookSpecificOutput.additionalContext`. Only then does the text
   reach Claude.
@@ -143,7 +155,7 @@ context the whole time.
 - The `if` filter is best-effort. A hook that must block is backed by a
   permission rule.
 
-# 7. When you write frontmatter: trigger language only
+# 8. When you write frontmatter: trigger language only
 
 The `description:` on a skill or an agent states **when it fires** — the
 situations, the phrasings the user might use, the kinds of files or tasks
@@ -171,7 +183,7 @@ language, showing the situation that should cause the agent to be launched. Keep
 the commentary inside them about *why this is the moment to invoke*, not about
 what the agent knows.
 
-# 8. Before finishing
+# 9. Before finishing
 
 - Reread the new component against rule 2: name the one capability it owns, in
   one sentence. If that takes two sentences, split it or drop it.
