@@ -8,13 +8,16 @@ $NotCommandFormPattern = '^(?<word>[A-Za-z]+(ed|ing))\b'
 $ImperativeWordsEndingLikePast = @('Embed', 'Need', 'Feed', 'Seed', 'Speed', 'Shed', 'Proceed', 'Exceed', 'Succeed', 'Heed', 'Weed', 'Shred',
     'Bring', 'String', 'Ring', 'Sing', 'Swing', 'Spring', 'Wing')
 $ListLinePattern = '(?m)^\s*([-*]|\d+[.)])\s+\S'
-$WorkItemPattern = '(^|\s)#\d+\b'
+$WorkItemPattern = '(?<![\w&])#\d+\b|\bAB#\d+\b'
 $TrailerPattern = '^[\w-]+: '
 $DefaultBranches = @('master', 'main')
 
 $CommandFormRule = 'A commit subject reads as a command to the repo: what happens when the commit is applied ("Add ...", "Fix ...", "Change ..."), ' +
     'not "Added ..." or "Adding ...". It is a self-contained one-liner that a reader of git log --oneline understands without the diff. ' +
     'Describe the essence, not the details that the diff shows. Write it in ASD-STE100.'
+
+$WorkItemRule = 'A commit message never refers to a work item with a # reference (#1234 or AB#1234), also when git log shows that pattern. ' +
+    'Remove the reference.'
 
 function Main {
     param([string] $RawInput)
@@ -45,6 +48,10 @@ function Get-CommitDecision {
 
     if ($subject -and -not (Test-CommandForm -Subject $subject)) {
         return @{ Decision = 'deny'; Reason = "The commit subject '$subject' is not in command form. $CommandFormRule" }
+    }
+
+    if ($message -match $WorkItemPattern) {
+        return @{ Decision = 'deny'; Reason = "The commit message has a work item reference. $WorkItemRule" }
     }
 
     $concerns = @(Get-Concerns -Message $message -CommitArgs $commitArgs -WorkingDirectory $WorkingDirectory)
@@ -90,9 +97,6 @@ function Get-Concerns {
     $body = @($Message -split '\r?\n' | Where-Object { $_ -notmatch $TrailerPattern }) -join "`n"
     if ($body -match $ListLinePattern) {
         'The message has a list. A list fits only when the user allowed it for this session.'
-    }
-    if ($Message -match $WorkItemPattern) {
-        'The message refers to a work item with #. Approve only if you agreed to that reference.'
     }
     if ($CommitArgs -match '(^|\s)--amend\b') {
         $branch = git -C $WorkingDirectory branch --show-current

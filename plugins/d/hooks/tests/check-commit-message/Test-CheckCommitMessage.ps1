@@ -21,7 +21,11 @@ $cases = @(
     @{ Name = 'heredoc with a trailer'; Command = $heredoc; Expected = $null }
     @{ Name = 'here-string in past tense'; Command = $hereString; Expected = "deny: The commit subject 'Fixed the upload'" }
     @{ Name = 'list in the body'; Command = 'git commit -m "Add export retry" -m "- one`n- two"'; Expected = "ask: Commit 'Add export retry'. The message has a list." }
-    @{ Name = 'work item reference'; Command = 'git commit -m "Fix upload for #123"'; Expected = "ask: Commit 'Fix upload for #123'. The message refers to a work item" }
+    @{ Name = 'work item reference'; Command = 'git commit -m "Fix upload for #123"'; Expected = 'deny: The commit message has a work item reference.' }
+    @{ Name = 'work item reference in parentheses'; Command = 'git commit -m "Fix upload (#123)"'; Expected = 'deny: The commit message has a work item reference.' }
+    @{ Name = 'Azure Boards work item reference'; Command = 'git commit -m "Fix upload AB#123"'; Expected = 'deny: The commit message has a work item reference.' }
+    @{ Name = 'work item reference in the body'; Command = 'git commit -m "Fix upload" -m "Part of #123"'; Expected = 'deny: The commit message has a work item reference.' }
+    @{ Name = 'hash in a language name'; Command = 'git commit -m "Format C# files"'; Expected = $null }
     @{ Name = 'amend on master'; Command = 'git commit --amend -m "Add export retry"'; Expected = "ask: Commit 'Add export retry'. This amends a commit on master." }
     @{ Name = 'message from a file'; Command = 'git commit -F message.txt'; Expected = $null }
     @{ Name = 'after git add'; Command = 'git add . && git commit -m "Updated docs"'; Expected = "deny: The commit subject 'Updated docs'" }
