@@ -102,22 +102,6 @@
             "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/check-commit-message.ps1"],
             "timeout": 10,
             "statusMessage": "Checking the commit message"
-          },
-          {
-            "type": "command",
-            "if": "Bash(git *commit*)",
-            "command": "powershell",
-            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/repair-line-endings-before-commit.ps1"],
-            "timeout": 10,
-            "statusMessage": "Repairing line endings"
-          },
-          {
-            "type": "command",
-            "if": "PowerShell(git *commit*)",
-            "command": "powershell",
-            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/repair-line-endings-before-commit.ps1"],
-            "timeout": 10,
-            "statusMessage": "Repairing line endings"
           }
         ]
       },
@@ -156,6 +140,27 @@
       }
     ],
     "PostToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git *commit*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/refresh-line-endings-after-commit.ps1"],
+            "timeout": 30,
+            "statusMessage": "Refreshing line endings"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(git *commit*)",
+            "command": "powershell",
+            "args": ["-NoProfile", "-File", "${CLAUDE_PLUGIN_ROOT}/hooks/refresh-line-endings-after-commit.ps1"],
+            "timeout": 30,
+            "statusMessage": "Refreshing line endings"
+          }
+        ]
+      },
       {
         "matcher": "Write|Edit",
         "hooks": [
