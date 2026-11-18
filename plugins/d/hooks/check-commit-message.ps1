@@ -126,12 +126,17 @@ function Write-Decision {
 }
 
 if ($MyInvocation.InvocationName -ne '.') {
+    $rawInput = Read-RawInput
     try {
         $ErrorActionPreference = 'Stop'
-        Main -RawInput (Read-RawInput)
+        Main -RawInput $rawInput
     }
     catch {
-        # A failure here must never block the commit.
+        if ($rawInput -match '\bcommit\b') {
+            $failure = @{ Decision = 'ask'; Reason = "The commit message check failed ($($_.Exception.Message)). Read the message before you approve the commit." }
+            $answerable = Resolve-AnswerableDecision -Decision $failure -RawInput $rawInput
+            Write-Decision @answerable
+        }
     }
     exit 0
 }
