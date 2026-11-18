@@ -25,6 +25,8 @@ $cases = @(
     @{ Name = 'work item reference in parentheses'; Command = 'git commit -m "Fix upload (#123)"'; Expected = 'deny: The commit message has a work item reference.' }
     @{ Name = 'Azure Boards work item reference'; Command = 'git commit -m "Fix upload AB#123"'; Expected = 'deny: The commit message has a work item reference.' }
     @{ Name = 'work item reference in the body'; Command = 'git commit -m "Fix upload" -m "Part of #123"'; Expected = 'deny: The commit message has a work item reference.' }
+    @{ Name = 'repo path in a variable'; Command = '$r = "C:\x"; git -C $r commit -m "Add export retry"'; Expected = 'deny: In a git commit command, write the -C path literally' }
+    @{ Name = 'repo path in a quoted variable'; Command = 'git -C "$repo" commit -m "Add export retry"'; Expected = 'deny: In a git commit command, write the -C path literally' }
     @{ Name = 'hash in a language name'; Command = 'git commit -m "Format C# files"'; Expected = $null }
     @{ Name = 'amend on master'; Command = 'git commit --amend -m "Add export retry"'; Expected = "ask: Commit 'Add export retry'. This amends a commit on master." }
     @{ Name = 'message from a file'; Command = 'git commit -F message.txt'; Expected = $null }

@@ -19,6 +19,8 @@ $CommandFormRule = 'A commit subject reads as a command to the repo: what happen
 $WorkItemRule = 'A commit message never refers to a work item with a # reference (#1234 or AB#1234), also when git log shows that pattern. ' +
     'Remove the reference.'
 
+$LiteralRepoRule = 'In a git commit command, write the -C path literally, not as a variable: the post-commit hook reads the path from the command text.'
+
 function Main {
     param([string] $RawInput)
 
@@ -41,6 +43,9 @@ function Get-CommitDecision {
     $commit = [regex]::Match($Command, $CommitPattern)
     if (-not $commit.Success) {
         return $null
+    }
+    if ($commit.Groups['repo'].Value.Trim('"').StartsWith('$')) {
+        return @{ Decision = 'deny'; Reason = $LiteralRepoRule }
     }
     $commitArgs = $commit.Groups['args'].Value
     $message = Get-CommitMessage -CommitArgs $commitArgs
