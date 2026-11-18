@@ -7,6 +7,8 @@ function New-FixtureRepo {
 }
 
 $repo = New-FixtureRepo
+Set-Content -LiteralPath (Join-Path $repo 'past.txt') -Value "Fixed the upload`n`nMore text."
+Set-Content -LiteralPath (Join-Path $repo 'reference.txt') -Value 'Fix the upload for #123'
 $heredoc = "git commit -m `"`$(cat <<'EOF'`nAdd export retry`n`nCo-Authored-By: Someone <someone@example.com>`nEOF`n)`""
 $hereString = "git commit -m @'`nFixed the upload`n'@"
 
@@ -25,11 +27,16 @@ $cases = @(
     @{ Name = 'work item reference in parentheses'; Command = 'git commit -m "Fix upload (#123)"'; Expected = 'deny: The commit message has a work item reference.' }
     @{ Name = 'Azure Boards work item reference'; Command = 'git commit -m "Fix upload AB#123"'; Expected = 'deny: The commit message has a work item reference.' }
     @{ Name = 'work item reference in the body'; Command = 'git commit -m "Fix upload" -m "Part of #123"'; Expected = 'deny: The commit message has a work item reference.' }
-    @{ Name = 'repo path in a variable'; Command = '$r = "C:\x"; git -C $r commit -m "Add export retry"'; Expected = 'deny: In a git commit command, write the -C path literally' }
-    @{ Name = 'repo path in a quoted variable'; Command = 'git -C "$repo" commit -m "Add export retry"'; Expected = 'deny: In a git commit command, write the -C path literally' }
+    @{ Name = 'repo path in a variable'; Command = '$r = "C:\x"; git -C $r commit -m "Add export retry"'; Expected = 'deny: In a git commit command, write' }
+    @{ Name = 'repo path in a quoted variable'; Command = 'git -C "$repo" commit -m "Add export retry"'; Expected = 'deny: In a git commit command, write' }
     @{ Name = 'hash in a language name'; Command = 'git commit -m "Format C# files"'; Expected = $null }
     @{ Name = 'amend on master'; Command = 'git commit --amend -m "Add export retry"'; Expected = "ask: Commit 'Add export retry'. This amends a commit on master." }
-    @{ Name = 'message from a file'; Command = 'git commit -F message.txt'; Expected = $null }
+    @{ Name = 'message in a variable'; Command = 'git commit -m $message'; Expected = 'deny: In a git commit command, write' }
+    @{ Name = 'message in a quoted variable'; Command = 'git commit -am "$message"'; Expected = 'deny: In a git commit command, write' }
+    @{ Name = 'message file in a variable'; Command = 'git commit -F $file'; Expected = 'deny: In a git commit command, write' }
+    @{ Name = 'message from a missing file'; Command = 'git commit -F missing.txt'; Expected = $null }
+    @{ Name = 'message from a file in past tense'; Command = 'git commit -F past.txt'; Expected = "deny: The commit subject 'Fixed the upload'" }
+    @{ Name = 'message from a file with a work item reference'; Command = 'git commit --file="reference.txt"'; Expected = 'deny: The commit message has a work item reference.' }
     @{ Name = 'after git add'; Command = 'git add . && git commit -m "Updated docs"'; Expected = "deny: The commit subject 'Updated docs'" }
 )
 

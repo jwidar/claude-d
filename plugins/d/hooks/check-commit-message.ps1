@@ -4,6 +4,8 @@ $CommitPattern = '(^|[\s;&|(])git(\s+(-C\s+(?<repo>"[^"]+"|\S+)|-c\s+\S+|--[\w-]
 $HeredocPattern = '<<-?\s*[''"]?(?<tag>\w+)[''"]?\r?\n(?<body>[\s\S]*?)\r?\n\s*\k<tag>\b'
 $HereStringPattern = '@(?<quote>[''"])\r?\n(?<body>[\s\S]*?)\r?\n\k<quote>@'
 $MessageOptionPattern = '(^|\s)(-[a-zA-Z]*m|--message)(\s+|=)("(?<text>[^"]*)"|''(?<text>[^'']*)'')'
+$FileOptionPattern = '(^|\s)(-[a-zA-Z]*F|--file)(\s+|=)("(?<path>[^"]+)"|''(?<path>[^'']+)''|(?<path>[^\s;|&)]+))'
+$VariableValuePattern = '(^|\s)(-[a-zA-Z]*[mF]|--message|--file)(\s+|=)["'']?\$(?!\()'
 $NotCommandFormPattern = '^(?<word>[A-Za-z]+(ed|ing))\b'
 $ImperativeWordsEndingLikePast = @('Embed', 'Need', 'Feed', 'Seed', 'Speed', 'Shed', 'Proceed', 'Exceed', 'Succeed', 'Heed', 'Weed', 'Shred',
     'Bring', 'String', 'Ring', 'Sing', 'Swing', 'Spring', 'Wing')
@@ -19,7 +21,7 @@ $CommandFormRule = 'A commit subject reads as a command to the repo: what happen
 $WorkItemRule = 'A commit message never refers to a work item with a # reference (#1234 or AB#1234), also when git log shows that pattern. ' +
     'Remove the reference.'
 
-$LiteralRepoRule = 'In a git commit command, write the -C path literally, not as a variable: the post-commit hook reads the path from the command text.'
+$LiteralValueRule = 'In a git commit command, write the -C path, the message, and the -F file path literally, not as a variable: the commit hooks read them from the command text.'
 
 function Main {
     param([string] $RawInput)
@@ -44,11 +46,13 @@ function Get-CommitDecision {
     if (-not $commit.Success) {
         return $null
     }
-    if ($commit.Groups['repo'].Value.Trim('"').StartsWith('$')) {
-        return @{ Decision = 'deny'; Reason = $LiteralRepoRule }
-    }
+    $repo = $commit.Groups['repo'].Value.Trim('"')
     $commitArgs = $commit.Groups['args'].Value
-    $message = Get-CommitMessage -CommitArgs $commitArgs
+    if ($repo.StartsWith('$') -or $commitArgs -match $VariableValuePattern) {
+        return @{ Decision = 'deny'; Reason = $LiteralValueRule }
+    }
+    $directory = if (-not $repo) { $WorkingDirectory } elseif ([IO.Path]::IsPathRooted($repo)) { $repo } else { Join-Path $WorkingDirectory $repo }
+    $message = Get-CommitMessage -CommitArgs $commitArgs -Directory $directory
     $subject = Get-Subject -Message $message
 
     if ($subject -and -not (Test-CommandForm -Subject $subject)) {
@@ -59,7 +63,7 @@ function Get-CommitDecision {
         return @{ Decision = 'deny'; Reason = "The commit message has a work item reference. $WorkItemRule" }
     }
 
-    $concerns = @(Get-Concerns -Message $message -CommitArgs $commitArgs -WorkingDirectory $WorkingDirectory)
+    $concerns = @(Get-Concerns -Message $message -CommitArgs $commitArgs -WorkingDirectory $directory)
     if ($concerns.Count -eq 0) {
         return $null
     }
@@ -68,13 +72,22 @@ function Get-CommitDecision {
 }
 
 function Get-CommitMessage {
-    param([string] $CommitArgs)
+    param([string] $CommitArgs, [string] $Directory)
 
     foreach ($pattern in @($HeredocPattern, $HereStringPattern)) {
         $block = [regex]::Match($CommitArgs, $pattern)
         if ($block.Success) {
             return $block.Groups['body'].Value
         }
+    }
+    $file = [regex]::Match($CommitArgs, $FileOptionPattern)
+    if ($file.Success) {
+        $path = $file.Groups['path'].Value
+        $fullPath = if ([IO.Path]::IsPathRooted($path)) { $path } else { Join-Path $Directory $path }
+        if (Test-Path -LiteralPath $fullPath -PathType Leaf) {
+            return Get-Content -LiteralPath $fullPath -Raw
+        }
+        return ''
     }
     $parts = @([regex]::Matches($CommitArgs, $MessageOptionPattern) | ForEach-Object { $_.Groups['text'].Value })
     return $parts -join "`n`n"
