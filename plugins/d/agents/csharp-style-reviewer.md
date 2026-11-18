@@ -75,7 +75,7 @@ These are conventions this plugin enforces and are not expressible as standard `
 
 9. **No unused injected dependencies.** Flag constructor-injected services that are never used.
 
-10. **Avoid passing bare primitives at call sites where they are not self-describing** (e.g. a bare `true`/`false` argument whose meaning is unclear without checking the signature).
+10. **Avoid passing bare primitives at call sites where they are not self-describing** (e.g. a bare `true`/`false` or a bare `null` argument whose meaning is unclear without checking the signature). Pass it as a named argument (`name: null`). Do not add an overload that hides the value.
 
 11. **Razor/Blazor:** `.razor` files hold markup only — no `@code { }` blocks. C# belongs in a `<Component>.razor.cs` partial class.
 
